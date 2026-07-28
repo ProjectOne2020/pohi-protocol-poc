@@ -83,7 +83,6 @@ El primitivo criptográfico de PoHI puede integrarse en múltiples industrias do
 
 ## 📂 Estructura del Código
 
-```text
 pohi-protocol-poc/
 ├── src/
 │   ├── app/
@@ -92,11 +91,13 @@ pohi-protocol-poc/
 │   └── lib/
 │       └── pohi/
 │           └── pohiEngine.ts # Motor biométrico y matemático
-📬 Contacto y Colaboración
+
+---
+
+## 📬 Contacto y Colaboración
+
 Este protocolo se encuentra en fase activa de investigación y desarrollo para su implementación comercial en entornos P2P y Web3. Si eres inversor, desarrollador o empresa interesada en integrar el protocolo PoHI, auditar la tecnología o colaborar:
 
-Correo Electrónico: alejandro.gutierrezb31@gmail.com
-
-LinkedIn: [Alejandro Gutiérrez](https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/)
-
-GitHub: [ProjectOne2020](https://github.com/ProjectOne2020)
+* **Correo Electrónico:** [alejandro.gutierrezb31@gmail.com](mailto:alejandro.gutierrezb31@gmail.com)
+* **LinkedIn:** [Alejandro Gutiérrez](https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/)
+* **GitHub:** [ProjectOne2020](https://github.com/ProjectOne2020)
