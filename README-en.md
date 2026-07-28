@@ -20,10 +20,10 @@
 1. [Project Overview](#-project-overview)
 2. [The Problem: Fraud Automation](#-the-problem-fraud-automation)
 3. [The PoHI Solution (Privacy-First)](#-the-pohi-solution-privacy-first)
-4. [Why is PoHI Disruptive & Superior? (The Moat)](#-why-is-pohi-disruptive--superior-the-moat)
+4. [Why is PoHI Disruptive & Superior? (The Moat)](#-why-is-poihis-disruptive--superior-the-moat)
 5. [Practical Use Cases](#-practical-use-cases)
 6. [Code Architecture](#-code-architecture)
-7. [Local Quickstart](#-local-quickstart)
+7. [Contact & Collaboration](#-contact--collaboration)
 
 ---
 
@@ -45,7 +45,7 @@ P2P economies, decentralized markets, and critical web forms suffer from massive
 ## 💡 The PoHI Solution (Privacy-First)
 
 The calculation engine (`pohiEngine.ts`) measures flight times and dwell times in real-time. By analyzing variance and neuromuscular distribution:
-1. **Script Detection:** Bots inject text with near-zero latency variance (perfect linear timing).
+1. **Script Detection:** Bots inject text with near-zero latency variance (perfect linear timing) or are blocked upon attempting *Copy/Paste*.
 2. **Human Entropy:** Real humans generate chaotic micro-variations driven by neuromuscular fatigue and latency.
 3. **Zero Data Leaks:** No raw biometric data leaves the user's device; validation happens locally.
 
@@ -56,9 +56,9 @@ The calculation engine (`pohiEngine.ts`) measures flight times and dwell times i
 Unlike legacy solutions, PoHI introduces a brand-new paradigm that solves the historical flaws of behavioral biometrics:
 
 * **1. 100% Client-Side Architecture with Cryptographic Privacy (zk-Ready):** 
-  Past solutions (like *TypingDNA* or banking tools) force keystroke data to be sent to central servers, violating privacy and creating a single point of failure. PoHI processes everything locally and wraps the result in a mathematical proof (`zk-SNARK`). The server or smart contract only receives a `TRUE` or `FALSE`, without ever accessing the user's raw biometric data.
+  Past solutions force keystroke data to be sent to central servers, violating privacy and creating a single point of failure. PoHI processes everything locally and wraps the result in a mathematical proof (`zk-SNARK`). The server or smart contract only receives a `TRUE` or `FALSE`, without ever accessing the user's raw biometric data.
 * **2. Elimination of Invasive Hardware:** 
-  Web3 proof-of-humanity projects (like *Worldcoin*) require iris scanners or other intrusive hardware that users reject. PoHI uses the keyboard the user already has on their laptop or phone, adding zero friction.
+  Web3 proof-of-humanity projects require iris scanners or other intrusive hardware that users reject. PoHI uses the keyboard the user already has on their laptop or phone, adding zero friction.
 * **3. Destruction of the Attacker's Economic Model:** 
   Even if a bot attempts to simulate human errors or pauses using advanced scripts, the computational and engineering cost to replicate chaotic neuromuscular variance destroys the profitability of scaled fraud. **We make scamming more expensive than the profit it yields.**
 
@@ -83,7 +83,6 @@ PoHI's cryptographic primitive can be integrated across multiple industries wher
 
 ## 📂 Code Architecture
 
-```text
 pohi-protocol-poc/
 ├── src/
 │   ├── app/
@@ -92,3 +91,13 @@ pohi-protocol-poc/
 │   └── lib/
 │       └── pohi/
 │           └── pohiEngine.ts # Biometric and mathematical engine
+
+---
+
+## 📬 Contact & Collaboration
+
+This protocol is under active research and development for commercial implementation in P2P and Web3 environments. If you are an investor, developer, or enterprise interested in integrating the PoHI protocol, auditing the technology, or collaborating:
+
+* **Email:** [alejandro.gutierrezb31@gmail.com](mailto:alejandro.gutierrezb31@gmail.com)
+* **LinkedIn:** [Alejandro Gutiérrez](https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/)
+* **GitHub:** [ProjectOne2020](https://github.com/ProjectOne2020)
