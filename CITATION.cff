@@ -6,12 +6,14 @@ message: >
 
 title: "Proof of Human Intent (PoHI)"
 
-abstract: >
-  Proof of Human Intent (PoHI) is a privacy-preserving research protocol
-  for verifying human intent in AI-mediated digital transactions using
-  behavioral biometrics and Zero-Knowledge Proofs (zk-SNARKs).
-
 type: software
+
+version: "0.1.0"
+
+abstract: >
+  Proof of Human Intent (PoHI) is a privacy-preserving protocol
+  for verifying human intent in AI-mediated digital transactions
+  using behavioral biometrics and Zero-Knowledge Proofs (zk-SNARKs).
 
 authors:
   - family-names: "Gutiérrez"
@@ -20,76 +22,40 @@ authors:
 
 repository-code: "https://github.com/ProjectOne2020/pohi-protocol-pocmi"
 
-repository-artifact: "https://github.com/ProjectOne2020/pohi-protocol-pocmi"
-
 url: "https://github.com/ProjectOne2020/pohi-protocol-pocmi"
 
 license: "TBD"
 
-version: "0.1.0"
-
 date-released: "2026-07-28"
 
 keywords:
-  - Human Intent Verification
   - Proof of Human Intent
+  - Human Intent Verification
   - Behavioral Biometrics
-  - Zero Knowledge Proofs
+  - Zero-Knowledge Proofs
   - zk-SNARK
   - Computer Security
   - Applied Cryptography
   - AI Security
-  - Human Computer Interaction
   - Fraud Prevention
+  - Human-Computer Interaction
+  - Privacy
   - Authentication
-  - Privacy Preserving
-  - Digital Identity
-  - Trust
-  - Distributed Systems
-
-contact:
-  - name: "Alejandro Gutiérrez"
-    email: "alejandro.gutierrezb31@gmail.com"
-
-identifiers:
-  - type: url
-    value: "https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/"
-    description: "LinkedIn"
 
 preferred-citation:
   type: article
-
-  authors:
-    - family-names: "Gutiérrez"
-      given-names: "Alejandro"
 
   title: >
     Proof of Human Intent (PoHI):
     A Privacy-Preserving Behavioral Protocol for Human Intent Verification
     in AI-Mediated Digital Transactions
 
+  authors:
+    - family-names: "Gutiérrez"
+      given-names: "Alejandro"
+
   year: 2026
 
   publisher: "GitHub"
 
   url: "https://github.com/ProjectOne2020/pohi-protocol-pocmi"
-
-references:
-  - type: website
-    title: "Project Repository"
-    url: "https://github.com/ProjectOne2020/pohi-protocol-pocmi"
-
-  - type: website
-    title: "LinkedIn Profile"
-    url: "https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/"
-
-notes: >
-  Proof of Human Intent (PoHI) is an active research project.
-  Commercial partnerships, licensing opportunities, consulting,
-  pilot deployments, research collaborations, and investment
-  inquiries are welcome.
-
-contact-details:
-  email: "alejandro.gutierrezb31@gmail.com"
-  github: "https://github.com/ProjectOne2020/pohi-protocol-pocmi"
-  linkedin: "https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/"
