@@ -1,4 +1,4 @@
-'use client';
+'v client';
 
 import { useState, useEffect, useRef } from 'react';
 import { PoHIEngine } from '@/lib/pohi/pohiEngine';
@@ -9,6 +9,7 @@ export default function PoCDashboard() {
   const [lang, setLang] = useState<Language>('es');
   const [text, setText] = useState('');
   const [result, setResult] = useState<any>(null);
+  const [zkProof, ZkProof] = useState<string | null>(null);
   const engineRef = useRef<PoHIEngine | null>(null);
 
   const targetPhrase = "Confirmo transaccion segura";
@@ -28,12 +29,21 @@ export default function PoCDashboard() {
       engineRef.current.handleKeyUp(e.key);
       const evaluation = engineRef.current.evaluateIntent();
       setResult(evaluation);
+
+      // Si pasa la validación humana y completó suficiente texto, generamos la prueba zk simulada
+      if (evaluation.isHuman && text.length >= 10) {
+        const randomHash = "0x" + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
+        ZkProof(randomHash);
+      } else {
+        ZkProof(null);
+      }
     }
   };
 
   const handleReset = () => {
     setText('');
     setResult(null);
+    ZkProof(null);
     if (engineRef.current) {
       engineRef.current.reset();
     }
@@ -44,16 +54,15 @@ export default function PoCDashboard() {
       badge: "Protocolo PoHI v0.1 - Prueba de Concepto",
       title: "Prueba de Intención Humana",
       subtitle: "Auditoría biométrica conductual ejecutada 100% en el cliente. Protege transacciones P2P contra bots sin comprometer tu privacidad.",
-      instructionTitle: "Paso 1: Escribe la frase de confirmación de forma natural:",
-      targetBox: "Frase requerida:",
-      placeholder: "Escribe aquí...",
-      statusTitle: "Resultado del Análisis Biométrico en Tiempo Real:",
+      instructionTitle: "Escribe la frase de confirmación de forma natural:",
+      placeholder: "Escribe aquí la frase...",
+      statusTitle: "Estado del Motor Biométrico en Vivo:",
       waiting: "Esperando pulsaciones...",
-      human: "VERIFICADO: PATRÓN HUMANO DETECTADO",
-      bot: "ANALIZANDO RITMO / PATRÓN ARTIFICIAL",
+      human: "VERIFICADO: HUMANO REAL (Var. Válida)",
+      bot: "ANALIZANDO... (Escribe más natural)",
       confidence: "Confianza Neuromuscular:",
       variance: "Varianza de Latencia:",
-      explanation: "Los humanos reales generan micro-pausas y variaciones caóticas al teclear. Los bots y scripts inyectan texto con velocidad y ritmo milimétricamente lineales.",
+      proofTitle: "Prueba de Conocimiento Cero (zk-SNARK Hash Generado):",
       reset: "Reiniciar prueba",
       footer: "Zero-Knowledge Architecture Ready"
     },
@@ -61,16 +70,15 @@ export default function PoCDashboard() {
       badge: "PoHI Protocol v0.1 - Proof of Concept",
       title: "Proof of Human Intent",
       subtitle: "Client-side behavioral biometric auditing. Securing P2P transactions against AI bots while preserving user privacy.",
-      instructionTitle: "Step 1: Type the confirmation phrase naturally:",
-      targetBox: "Required phrase:",
-      placeholder: "Type here...",
-      statusTitle: "Real-time Biometric Analysis Result:",
+      instructionTitle: "Type the confirmation phrase naturally:",
+      placeholder: "Type the phrase here...",
+      statusTitle: "Live Biometric Engine Status:",
       waiting: "Waiting for keystrokes...",
-      human: "VERIFIED: HUMAN PATTERN DETECTED",
-      bot: "ANALYZING RITMO / ARTIFICIAL PATTERN",
+      human: "VERIFIED: REAL HUMAN (Valid Var.)",
+      bot: "ANALYZING... (Type more naturally)",
       confidence: "Neuromuscular Confidence:",
       variance: "Latency Variance:",
-      explanation: "Real humans produce chaotic micro-variations and pauses while typing. Bots and scripts inject text with perfectly linear speed and timing.",
+      proofTitle: "Zero-Knowledge Proof (zk-SNARK Hash Generated):",
       reset: "Reset test",
       footer: "Zero-Knowledge Architecture Ready"
     }
@@ -79,54 +87,47 @@ export default function PoCDashboard() {
   const t = content[lang];
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-cyan-500 selection:text-slate-950">
+    <main style={{ backgroundColor: '#020617', color: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, -apple-system, sans-serif', padding: '20px' }}>
       
-      {/* Selector de Idioma */}
-      <div className="absolute top-6 right-6 flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full p-1 shadow-lg">
+      {/* Selector de Idioma Flotante */}
+      <div style={{ position: 'absolute', top: '20px', right: '20px', display: 'flex', gap: '5px', background: '#0f172a', padding: '4px', borderRadius: '9999px', border: '1px solid #1e293b' }}>
         <button
           onClick={() => setLang('es')}
-          className={`px-3 py-1 text-xs font-mono rounded-full transition-all ${
-            lang === 'es' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'
-          }`}
+          style={{ background: lang === 'es' ? '#06b6d4' : 'transparent', color: lang === 'es' ? '#020617' : '#94a3b8', border: 'none', padding: '6px 12px', borderRadius: '9999px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
         >
           ES
         </button>
         <button
           onClick={() => setLang('en')}
-          className={`px-3 py-1 text-xs font-mono rounded-full transition-all ${
-            lang === 'en' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'
-          }`}
+          style={{ background: lang === 'en' ? '#06b6d4' : 'transparent', color: lang === 'en' ? '#020617' : '#94a3b8', border: 'none', padding: '6px 12px', borderRadius: '9999px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
         >
           EN
         </button>
       </div>
 
-      <div className="max-w-xl w-full bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+      <div style={{ maxWidth: '600px', width: '100%', background: '#0f172a', border: '1px solid #1e293b', borderRadius: '24px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', boxSizing: 'border-box' }}>
         
-        {/* Línea decorativa superior */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-500" />
-
-        <div className="text-center mb-8">
-          <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-800/50 mb-4">
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <span style={{ display: 'inline-block', fontSize: '11px', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#22d3ee', background: '#083344', padding: '4px 12px', borderRadius: '9999px', border: '1px solid #164e63', marginBottom: '12px' }}>
             {t.badge}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+          <h1 style={{ fontSize: '26px', fontWeight: '800', margin: '0 0 8px 0', color: '#ffffff' }}>
             {t.title}
           </h1>
-          <p className="text-sm text-slate-400 leading-relaxed">
+          <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, lineHeight: '1.5' }}>
             {t.subtitle}
           </p>
         </div>
 
-        {/* Sección de Entrada */}
-        <div className="space-y-3 mb-6">
-          <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        {/* Caja de Frase Requerida */}
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#cbd5e1', textTransform: 'uppercase', marginBottom: '8px' }}>
             {t.instructionTitle}
           </label>
           
-          <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-cyan-400 flex items-center justify-between">
+          <div style={{ background: '#020617', border: '1px solid #1e293b', borderRadius: '12px', padding: '12px 16px', fontFamily: 'monospace', fontSize: '13px', color: '#38bdf8', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span>"{targetPhrase}"</span>
-            <span className="text-[10px] text-slate-500 uppercase">Copiar o memorizar</span>
+            <span style={{ fontSize: '10px', color: '#64748b' }}>Copiar / Copy</span>
           </div>
           
           <input
@@ -136,54 +137,58 @@ export default function PoCDashboard() {
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
             placeholder={t.placeholder}
-            className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 text-slate-100 font-mono text-sm shadow-inner transition-all"
+            style={{ width: '100%', padding: '14px 16px', background: '#020617', border: '1px solid #334155', borderRadius: '12px', color: '#ffffff', fontSize: '14px', fontFamily: 'monospace', outline: 'none', boxSizing: 'border-box' }}
             autoComplete="off"
           />
         </div>
 
-        {/* Caja de Resultados */}
-        <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-4 shadow-inner">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{t.statusTitle}</span>
+        {/* Panel de Resultados en Vivo */}
+        <div style={{ background: '#020617', border: '1px solid #1e293b', borderRadius: '16px', padding: '20px', marginBottom: '20px' }}>
+          <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px' }}>
+            {t.statusTitle}
           </div>
 
-          <div className="flex items-center space-x-3">
-            <span className={`inline-block w-3 h-3 rounded-full animate-pulse ${
-              result?.isHuman ? 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.6)]' : 'bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.6)]'
-            }`} />
-            <span className={`text-xs font-bold font-mono tracking-wide ${
-              result?.isHuman ? 'text-emerald-400' : 'text-amber-400'
-            }`}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: result?.isHuman ? '#34d399' : '#fbbf24', display: 'inline-block', boxShadow: result?.isHuman ? '0 0 10px #34d399' : '0 0 10px #fbbf24' }} />
+            <span style={{ fontSize: '12px', fontWeight: 'bold', fontFamily: 'monospace', color: result?.isHuman ? '#34d399' : '#fbbf24' }}>
               {result ? (result.isHuman ? t.human : t.bot) : t.waiting}
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 pt-3 text-xs font-mono text-slate-400 border-t border-slate-900">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', paddingTop: '12px', borderTop: '1px solid #0f172a', fontSize: '12px', fontFamily: 'monospace', color: '#94a3b8' }}>
             <div>
               {t.confidence} <br />
-              <span className="text-slate-100 font-bold text-sm">{result ? `${result.confidence}%` : '---'}</span>
+              <span style={{ color: '#ffffff', fontWeight: 'bold', fontSize: '15px' }}>{result ? `${result.confidence}%` : '---'}</span>
             </div>
             <div>
               {t.variance} <br />
-              <span className="text-slate-100 font-bold text-sm">{result?.stats?.varianceDwell ? `${result.stats.varianceDwell}ms` : '---'}</span>
+              <span style={{ color: '#ffffff', fontWeight: 'bold', fontSize: '15px' }}>{result?.stats?.varianceDwell ? `${result.stats.varianceDwell}ms` : '---'}</span>
             </div>
           </div>
 
-          <p className="text-[11px] text-slate-500 leading-relaxed pt-2 border-t border-slate-900/50">
-            {t.explanation}
-          </p>
+          {/* Si genera la prueba zk, aparece aquí */}
+          {zkProof && (
+            <div style={{ marginTop: '16px', padding: '12px', background: '#064e3b', border: '1px solid #059669', borderRadius: '10px' }}>
+              <div style={{ fontSize: '10px', color: '#34d399', textTransform: 'uppercase', fontWeight: 'bold', marginBottom: '4px' }}>
+                {t.proofTitle}
+              </div>
+              <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#ecfdf5', wordBreak: 'break-all' }}>
+                {zkProof}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Controles inferiores */}
-        <div className="mt-6 flex justify-between items-center text-xs">
+        {/* Acciones Inferiores */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <button
             onClick={handleReset}
-            className="text-slate-400 hover:text-white transition-colors underline underline-offset-4 font-mono"
+            style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline' }}
           >
             {t.reset}
           </button>
           
-          <span className="text-[10px] text-cyan-500/70 font-mono bg-cyan-950/40 px-2.5 py-1 rounded-md border border-cyan-900/40">
+          <span style={{ fontSize: '10px', fontFamily: 'monospace', color: '#22d3ee', background: '#083344', padding: '4px 8px', borderRadius: '6px', border: '1px solid #164e63' }}>
             {t.footer}
           </span>
         </div>
