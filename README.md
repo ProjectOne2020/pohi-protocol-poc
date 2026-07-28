@@ -23,7 +23,7 @@
 4. [¿Por qué PoHI es disruptivo y superior? (El Foso Defensivo)](#-por-qué-pohi-es-disruptivo-y-superior-el-foso-defensivo)
 5. [Casos de Uso Prácticos](#-casos-de-uso-prácticos)
 6. [Estructura del Código](#-estructura-del-código)
-7. [Ejecución Local](#-ejecución-local)
+7. [Contacto y Colaboración](#-contacto-y-colaboración)
 
 ---
 
@@ -36,7 +36,7 @@
 ## ⚠️ El Problema: La Automatización del Fraude
 
 Las economías P2P, los mercados descentralizados y los formularios críticos de internet sufren una degradación masiva de confianza debido a:
-- **Graneos de Bots impulsados por IA:** Scripts automatizados que replican comportamientos sintéticos a escala masiva con un costo operativo cercano a cero.
+- **Granjas de Bots impulsadas por IA:** Scripts automatizados que replican comportamientos sintéticos a escala masiva con un costo operativo cercano a cero.
 - **Ataques Sybil y Scalping:** Creación masiva de identidades falsas para drenar contratos inteligentes, acaparar recursos o manipular gobernanzas.
 - **Vulnerabilidad de la Privacidad:** Las soluciones tradicionales de biometría exigen enviar telemetría a servidores centralizados, convirtiéndose en blancos atractivos para brechas de datos.
 
@@ -45,7 +45,7 @@ Las economías P2P, los mercados descentralizados y los formularios críticos de
 ## 💡 La Solución PoHI (Privacy-First)
 
 El motor (`pohiEngine.ts`) calcula en tiempo real los tiempos de vuelo (*flight times*) y de pulsación (*dwell times*) de las teclas. Aplicando análisis estadístico sobre la varianza y la distribución neuromuscular:
-1. **Detección de Scripts:** Los bots inyectan texto con una varianza de latencia casi nula (ritmo milimétricamente lineal).
+1. **Detección de Scripts:** Los bots inyectan texto con una varianza de latencia casi nula (ritmo milimétricamente lineal) o son bloqueados al intentar hacer *Copy/Paste*.
 2. **Entropía Humana:** Los humanos reales generan micro-variaciones caóticas debido a la fatiga y latencia neuromuscular.
 3. **Cero Fugas:** Ningún dato biométrico crudo sale del dispositivo del usuario; la validación ocurre localmente.
 
@@ -56,9 +56,9 @@ El motor (`pohiEngine.ts`) calcula en tiempo real los tiempos de vuelo (*flight 
 A diferencia de las herramientas del pasado, PoHI introduce un paradigma completamente nuevo que resuelve las fallas históricas de la biometría conductual:
 
 * **1. Arquitectura 100% Client-Side con Privacidad Criptográfica (zk-Ready):** 
-  Las soluciones anteriores (como *TypingDNA* o sistemas bancarios) obligan a enviar datos de tecleo a servidores centrales, violando la privacidad e introduciendo un punto único de fallo (honeypot). PoHI procesa todo localmente y empaqueta el resultado en una prueba matemática (`zk-SNARK`). El servidor o contrato inteligente solo recibe un `TRUE` o `FALSE`, sin conocer jamás los datos biométricos del usuario.
+  Las soluciones anteriores obligan a enviar datos de tecleo a servidores centralizados, violando la privacidad e introduciendo un punto único de fallo. PoHI procesa todo localmente y empaqueta el resultado en una prueba matemática (`zk-SNARK`). El servidor o contrato inteligente solo recibe un `TRUE` o `FALSE`, sin conocer jamás los datos biométricos del usuario.
 * **2. Eliminación de Hardware Invasivo:** 
-  Proyectos Web3 de prueba de humanidad (como *Worldcoin*) exigen escáneres de iris u otros hardwares invasivos que la gente rechaza. PoHI utiliza el teclado que el usuario ya tiene en su laptop o teléfono, sin fricción adicional.
+  Proyectos Web3 de prueba de humanidad exigen escáneres de iris u otros hardwares invasivos que la gente rechaza. PoHI utiliza el teclado que el usuario ya tiene en su laptop o teléfono, sin fricción adicional.
 * **3. Destrucción del Modelo Económico del Atacante:** 
   Incluso si un bot intenta simular errores humanos o pausas mediante scripts avanzados, el costo computacional y de desarrollo para replicar la varianza neuromuscular caótica destruye la rentabilidad del fraude a escala. **Hacemos que estafar cueste más que la ganancia obtenida.**
 
@@ -92,14 +92,11 @@ pohi-protocol-poc/
 │   └── lib/
 │       └── pohi/
 │           └── pohiEngine.ts # Motor biométrico y matemático
+📬 Contacto y Colaboración
+Este protocolo se encuentra en fase activa de investigación y desarrollo para su implementación comercial en entornos P2P y Web3. Si eres inversor, desarrollador o empresa interesada en integrar el protocolo PoHI, auditar la tecnología o colaborar:
 
----
+Correo Electrónico: alejandro.gutierrezb31@gmail.com
 
-## 📬 Contacto y Colaboración
+LinkedIn: [Alejandro Gutiérrez](https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/)
 
-Este protocolo se encuentra en fase activa de investigación y desarrollo para su implementación comercial en entornos P2P y Web3. 
-
-Si eres inversor, desarrollador o empresa interesada en integrar el protocolo PoHI, auditar la tecnología o colaborar en la ronda inicial:
-
-* **Correo Electrónico:** [tu-correo@domain.com](mailto:alejandro.gutierrezb31@gmail.com)
-* **LinkedIn:** [Tu Nombre / Perfil](https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/)
+GitHub: [ProjectOne2020](https://github.com/ProjectOne2020)
