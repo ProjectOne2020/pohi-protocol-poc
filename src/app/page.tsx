@@ -1,4 +1,4 @@
-'v client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { PoHIEngine } from '@/lib/pohi/pohiEngine';
@@ -9,7 +9,7 @@ export default function PoCDashboard() {
   const [lang, setLang] = useState<Language>('es');
   const [text, setText] = useState('');
   const [result, setResult] = useState<any>(null);
-  const [zkProof, ZkProof] = useState<string | null>(null);
+  const [zkProof, setZkProof] = useState<string | null>(null);
   const engineRef = useRef<PoHIEngine | null>(null);
 
   const targetPhrase = "Confirmo transaccion segura";
@@ -30,12 +30,11 @@ export default function PoCDashboard() {
       const evaluation = engineRef.current.evaluateIntent();
       setResult(evaluation);
 
-      // Si pasa la validación humana y completó suficiente texto, generamos la prueba zk simulada
       if (evaluation.isHuman && text.length >= 10) {
         const randomHash = "0x" + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
-        ZkProof(randomHash);
+        setZkProof(randomHash);
       } else {
-        ZkProof(null);
+        setZkProof(null);
       }
     }
   };
@@ -43,7 +42,7 @@ export default function PoCDashboard() {
   const handleReset = () => {
     setText('');
     setResult(null);
-    ZkProof(null);
+    setZkProof(null);
     if (engineRef.current) {
       engineRef.current.reset();
     }
@@ -127,7 +126,7 @@ export default function PoCDashboard() {
           
           <div style={{ background: '#020617', border: '1px solid #1e293b', borderRadius: '12px', padding: '12px 16px', fontFamily: 'monospace', fontSize: '13px', color: '#38bdf8', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span>"{targetPhrase}"</span>
-            <span style={{ fontSize: '10px', color: '#64748b' }}>Copiar / Copy</span>
+            <span style={{ fontSize: '10px', color: '#64748b' }}>Copy</span>
           </div>
           
           <input
@@ -166,7 +165,6 @@ export default function PoCDashboard() {
             </div>
           </div>
 
-          {/* Si genera la prueba zk, aparece aquí */}
           {zkProof && (
             <div style={{ marginTop: '16px', padding: '12px', background: '#064e3b', border: '1px solid #059669', borderRadius: '10px' }}>
               <div style={{ fontSize: '10px', color: '#34d399', textTransform: 'uppercase', fontWeight: 'bold', marginBottom: '4px' }}>
