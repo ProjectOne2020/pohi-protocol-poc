@@ -27,15 +27,29 @@ export default function PoCDashboard() {
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (engineRef.current) {
       engineRef.current.handleKeyUp(e.key);
-      const evaluation = engineRef.current.evaluateIntent();
+      const evaluation = engineRef.current.evaluateIntent(e.currentTarget.value.length);
       setResult(evaluation);
 
-      if (evaluation.isHuman && text.length >= 10) {
+      if (evaluation.isHuman && !engineRef.current.pasteDetected && e.currentTarget.value.length >= 8) {
         const randomHash = "0x" + Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
         setZkProof(randomHash);
       } else {
         setZkProof(null);
       }
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault(); // Bloqueamos el portapapeles para obligar al tecleo biométrico
+    if (engineRef.current) {
+      engineRef.current.handlePaste();
+      setResult({
+        isHuman: false,
+        confidence: 0,
+        stats: { varianceDwell: "0.00", varianceFlight: "0.00" },
+        status: "paste"
+      });
+      setZkProof(null);
     }
   };
 
@@ -52,32 +66,34 @@ export default function PoCDashboard() {
     es: {
       badge: "Protocolo PoHI v0.1 - Prueba de Concepto",
       title: "Prueba de Intención Humana",
-      subtitle: "Auditoría biométrica conductual ejecutada 100% en el cliente. Protege transacciones P2P contra bots sin comprometer tu privacidad.",
-      instructionTitle: "Escribe la frase de confirmación de forma natural:",
-      placeholder: "Escribe aquí la frase...",
+      subtitle: "Auditoría biométrica conductual ejecutada 100% en el cliente. Escribe manualmente para comprobar el motor.",
+      instructionTitle: "Escribe la frase de confirmación (El 'Copiar y Pegar' está bloqueado):",
+      placeholder: "Escribe aquí carácter por carácter...",
       statusTitle: "Estado del Motor Biométrico en Vivo:",
-      waiting: "Esperando pulsaciones...",
-      human: "VERIFICADO: HUMANO REAL (Var. Válida)",
-      bot: "ANALIZANDO... (Escribe más natural)",
+      waiting: "Esperando que comiences a escribir...",
+      human: "🟢 VERIFICADO: HUMANO REAL (Intención Orgánica)",
+      paste: "🔴 ALERTA: INTENTO DE COPY-PASTE BLOQUEADO",
+      analyzing: "🟡 Analizando cadencia neuromuscular...",
       confidence: "Confianza Neuromuscular:",
-      variance: "Varianza de Latencia:",
-      proofTitle: "Prueba de Conocimiento Cero (zk-SNARK Hash Generado):",
+      variance: "Varianza de Dwell:",
+      proofTitle: "Prueba Criptográfica Generada (zk-SNARK Hash):",
       reset: "Reiniciar prueba",
       footer: "Zero-Knowledge Architecture Ready"
     },
     en: {
       badge: "PoHI Protocol v0.1 - Proof of Concept",
       title: "Proof of Human Intent",
-      subtitle: "Client-side behavioral biometric auditing. Securing P2P transactions against AI bots while preserving user privacy.",
-      instructionTitle: "Type the confirmation phrase naturally:",
-      placeholder: "Type the phrase here...",
+      subtitle: "Client-side behavioral biometric auditing. Type manually to test the engine.",
+      instructionTitle: "Type the confirmation phrase (Copy-Paste is disabled):",
+      placeholder: "Type here character by character...",
       statusTitle: "Live Biometric Engine Status:",
-      waiting: "Waiting for keystrokes...",
-      human: "VERIFIED: REAL HUMAN (Valid Var.)",
-      bot: "ANALYZING... (Type more naturally)",
+      waiting: "Waiting for you to start typing...",
+      human: "🟢 VERIFIED: REAL HUMAN (Organic Intent)",
+      paste: "🔴 ALERT: COPY-PASTE BLOCKED",
+      analyzing: "🟡 Analyzing neuromuscular cadence...",
       confidence: "Neuromuscular Confidence:",
-      variance: "Latency Variance:",
-      proofTitle: "Zero-Knowledge Proof (zk-SNARK Hash Generated):",
+      variance: "Dwell Variance:",
+      proofTitle: "Generated Cryptographic Proof (zk-SNARK Hash):",
       reset: "Reset test",
       footer: "Zero-Knowledge Architecture Ready"
     }
@@ -124,9 +140,8 @@ export default function PoCDashboard() {
             {t.instructionTitle}
           </label>
           
-          <div style={{ background: '#020617', border: '1px solid #1e293b', borderRadius: '12px', padding: '12px 16px', fontFamily: 'monospace', fontSize: '13px', color: '#38bdf8', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <div style={{ background: '#020617', border: '1px solid #1e293b', borderRadius: '12px', padding: '12px 16px', fontFamily: 'monospace', fontSize: '13px', color: '#38bdf8', marginBottom: '10px' }}>
             <span>"{targetPhrase}"</span>
-            <span style={{ fontSize: '10px', color: '#64748b' }}>Copy</span>
           </div>
           
           <input
@@ -135,6 +150,7 @@ export default function PoCDashboard() {
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
+            onPaste={handlePaste}
             placeholder={t.placeholder}
             style={{ width: '100%', padding: '14px 16px', background: '#020617', border: '1px solid #334155', borderRadius: '12px', color: '#ffffff', fontSize: '14px', fontFamily: 'monospace', outline: 'none', boxSizing: 'border-box' }}
             autoComplete="off"
@@ -148,9 +164,20 @@ export default function PoCDashboard() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: result?.isHuman ? '#34d399' : '#fbbf24', display: 'inline-block', boxShadow: result?.isHuman ? '0 0 10px #34d399' : '0 0 10px #fbbf24' }} />
-            <span style={{ fontSize: '12px', fontWeight: 'bold', fontFamily: 'monospace', color: result?.isHuman ? '#34d399' : '#fbbf24' }}>
-              {result ? (result.isHuman ? t.human : t.bot) : t.waiting}
+            <span style={{ 
+              width: '10px', 
+              height: '10px', 
+              borderRadius: '50%', 
+              background: result?.status === 'human' ? '#34d399' : result?.status === 'paste' ? '#f87171' : '#fbbf24', 
+              display: 'inline-block' 
+            }} />
+            <span style={{ 
+              fontSize: '12px', 
+              fontWeight: 'bold', 
+              fontFamily: 'monospace', 
+              color: result?.status === 'human' ? '#34d399' : result?.status === 'paste' ? '#f87171' : '#fbbf24' 
+            }}>
+              {result?.status === 'human' ? t.human : result?.status === 'paste' ? t.paste : result?.status === 'analyzing' ? t.analyzing : t.waiting}
             </span>
           </div>
 
