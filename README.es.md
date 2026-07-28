@@ -20,7 +20,7 @@ En este escenario, analizar únicamente el contenido generado deja de ser sufici
 
 PoHI propone un cambio de paradigma.
 
-En lugar de analizar el resultado de la interacción, analiza la dinámica física utilizada para producirla.
+En lugar de analizar el contenido generado, analiza la dinámica física utilizada para producirlo.
 
 ---
 
@@ -28,31 +28,31 @@ En lugar de analizar el resultado de la interacción, analiza la dinámica físi
 
 PoHI mide diferentes características conductuales durante la interacción del usuario, entre ellas:
 
-- Tiempo de presión de teclas
-- Tiempo entre pulsaciones
+- Tiempo de presión de teclas (Dwell Time)
+- Tiempo entre pulsaciones (Flight Time)
 - Pausas cognitivas
 - Asimetría motora
 - Dinámica de correcciones
-- Entropía conductual
+- Entropía de interacción humana
 
 Todas las métricas se procesan localmente en el dispositivo.
 
 La información biométrica nunca abandona el equipo del usuario.
 
-Únicamente se genera una prueba criptográfica de conocimiento cero que demuestra que la interacción cumple los requisitos del protocolo sin revelar datos sensibles.
+Únicamente se genera una prueba criptográfica de conocimiento cero (zk-SNARK) que demuestra que la interacción cumple los requisitos del protocolo sin revelar información biométrica.
 
 ---
 
 ## Estructura del Repositorio
 
-```
+```text
 paper/          Investigación académica
 docs/           Documentación técnica
-prototype/      Prototipo
-client/         Cliente
+prototype/      Prueba de concepto
+client/         Cliente web
 server/         Servicios de verificación
 circuits/       Circuitos zk-SNARK
-verifier/       Verificador
+verifier/       Verificador criptográfico
 research/       Investigación experimental
 benchmarks/     Conjuntos de validación
 ```
@@ -64,8 +64,8 @@ benchmarks/     Conjuntos de validación
 Estado actual:
 
 - ✅ Investigación finalizada
-- ✅ Manuscrito académico
-- 🚧 Prototipo en desarrollo
+- ✅ Manuscrito académico finalizado
+- 🚧 Implementación del prototipo
 - 🚧 Implementación de referencia
 - ⏳ Validación experimental
 
@@ -80,6 +80,60 @@ Estado actual:
 - Interacción Humano-Computadora
 - Seguridad para IA
 - Prevención de Fraude
+- Sistemas Distribuidos
+
+---
+
+## Visión
+
+Proof of Human Intent introduce una nueva primitiva de seguridad.
+
+En lugar de demostrar la identidad de una persona, PoHI busca demostrar que una acción digital fue originada por una intención humana genuina preservando completamente la privacidad.
+
+El protocolo está diseñado para complementar, no reemplazar, los sistemas tradicionales de autenticación y verificación de identidad.
+
+---
+
+## Repositorio
+
+GitHub Repository
+
+https://github.com/ProjectOne2020/pohi-protocol-pocmi
+
+---
+
+## Negocios y Colaboración
+
+El proyecto PoHI está abierto a:
+
+- Licenciamiento comercial
+- Alianzas estratégicas
+- Colaboraciones de investigación
+- Integraciones empresariales
+- Consultoría en ciberseguridad
+- Oportunidades de inversión
+- Implementaciones piloto
+- Colaboraciones académicas
+
+Si tu organización está interesada en adoptar, licenciar o colaborar en el desarrollo de PoHI, no dudes en contactarme.
+
+---
+
+## Contacto
+
+**Alejandro Gutiérrez**
+
+Correo electrónico
+
+alejandro.gutierrezb31@gmail.com
+
+GitHub
+
+https://github.com/ProjectOne2020/pohi-protocol-pocmi
+
+LinkedIn
+
+https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/
 
 ---
 
@@ -91,6 +145,10 @@ La licencia será definida antes de la primera versión estable del protocolo.
 
 ## Aviso
 
-PoHI es actualmente un proyecto activo de investigación.
+Proof of Human Intent (PoHI) es un proyecto activo de investigación.
 
-El protocolo no debe considerarse listo para producción hasta completar su validación experimental.
+El protocolo y su implementación de referencia continúan en desarrollo y no deben considerarse listos para producción hasta completar una validación experimental exhaustiva.
+
+---
+
+© 2026 Alejandro Gutiérrez. Todos los derechos reservados.
