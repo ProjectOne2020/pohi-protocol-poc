@@ -92,3 +92,14 @@ pohi-protocol-poc/
 │   └── lib/
 │       └── pohi/
 │           └── pohiEngine.ts # Motor biométrico y matemático
+
+---
+
+## 📬 Contacto y Colaboración
+
+Este protocolo se encuentra en fase activa de investigación y desarrollo para su implementación comercial en entornos P2P y Web3. 
+
+Si eres inversor, desarrollador o empresa interesada en integrar el protocolo PoHI, auditar la tecnología o colaborar en la ronda inicial:
+
+* **Correo Electrónico:** [tu-correo@domain.com](mailto:alejandro.gutierrezb31@gmail.com)
+* **LinkedIn:** [Tu Nombre / Perfil](https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/)
