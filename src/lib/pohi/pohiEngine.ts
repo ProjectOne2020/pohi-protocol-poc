@@ -1,4 +1,4 @@
-// Motor biométrico y de detección de intención humana (PoHI Core v0.2)
+// Motor biométrico y de detección de intención humana (PoHI Core v0.3)
 export class PoHIEngine {
   private keyTimestamps: Map<string, number> = new Map();
   private dwellTimes: number[] = [];
@@ -16,7 +16,8 @@ export class PoHIEngine {
 
     if (this.lastKeyUpTime > 0) {
       const flightTime = now - this.lastKeyUpTime;
-      if (flightTime < 3000 && flightTime > 0) {
+      // Filtramos pausas absurdas de más de 2 segundos (cuando el humano se detiene a pensar)
+      if (flightTime < 2000 && flightTime > 0) {
         this.flightTimes.push(flightTime);
       }
     }
@@ -28,7 +29,7 @@ export class PoHIEngine {
 
     if (keyDownTime) {
       const dwellTime = now - keyDownTime;
-      if (dwellTime > 0 && dwellTime < 1000) {
+      if (dwellTime > 0 && dwellTime < 500) {
         this.dwellTimes.push(dwellTime);
       }
       this.keyTimestamps.delete(key);
@@ -37,7 +38,6 @@ export class PoHIEngine {
   }
 
   public evaluateIntent(currentTextLength: number): { isHuman: boolean; confidence: number; stats: any; status: string } {
-    // Si el usuario intentó hacer Copy-Paste, se invalida inmediatamente
     if (this.pasteDetected) {
       return {
         isHuman: false,
@@ -47,37 +47,46 @@ export class PoHIEngine {
       };
     }
 
-    if (currentTextLength < 4) {
+    // Exigimos al menos 15 caracteres para tener una muestra estadística confiable
+    if (currentTextLength < 15) {
       return {
         isHuman: false,
-        confidence: 10,
+        confidence: Math.floor((currentTextLength / 15) * 40),
         stats: { varianceDwell: 0, varianceFlight: 0 },
-        status: "waiting"
+        status: "collecting" // Recopilando entropía
       };
     }
 
-    // Cálculo estadístico de varianza de pulsación (Dwell time)
     const meanDwell = this.dwellTimes.length > 0 
       ? this.dwellTimes.reduce((a, b) => a + b, 0) / this.dwellTimes.length 
       : 0;
     
     const varianceDwell = this.dwellTimes.length > 1 
       ? this.dwellTimes.reduce((sum, val) => sum + Math.pow(val - meanDwell, 2), 0) / this.dwellTimes.length 
-      : 5;
+      : 0;
 
-    // Los scripts automatizados o bots escriben con varianza casi nula (ritmo robótico idéntico)
-    // Los humanos reales muestran varianza orgánica por la latencia neuromuscular
-    const isRobot = varianceDwell < 0.1 && this.dwellTimes.length > 4;
-    const isHuman = !isRobot && currentTextLength >= 5;
+    const meanFlight = this.flightTimes.length > 0 
+      ? this.flightTimes.reduce((a, b) => a + b, 0) / this.flightTimes.length 
+      : 0;
 
-    const confidence = isHuman ? Math.min(99, Math.floor(82 + (varianceDwell * 3))) : 15;
+    const varianceFlight = this.flightTimes.length > 1 
+      ? this.flightTimes.reduce((sum, val) => sum + Math.pow(val - meanFlight, 2), 0) / this.flightTimes.length 
+      : 0;
+
+    // Detección de bot por linealidad extrema (scripts que escriben letra por letra con ritmos planos)
+    const isTooLinear = varianceDwell < 0.05 && varianceFlight < 10;
+
+    const isHuman = !isTooLinear && this.dwellTimes.length >= 10;
+    
+    // Cálculo de confianza basado en la entropía orgánica de los tiempos de vuelo
+    const entropyScore = Math.min(98, Math.floor(70 + (varianceFlight / 50)));
 
     return {
       isHuman: isHuman,
-      confidence: isHuman ? confidence : 20,
+      confidence: isHuman ? Math.max(85, entropyScore) : 30,
       stats: {
         varianceDwell: varianceDwell.toFixed(2),
-        varianceFlight: this.flightTimes.length > 0 ? (this.flightTimes.reduce((a, b) => a + b, 0) / this.flightTimes.length).toFixed(2) : "0"
+        varianceFlight: varianceFlight.toFixed(2)
       },
       status: isHuman ? "human" : "analyzing"
     };
