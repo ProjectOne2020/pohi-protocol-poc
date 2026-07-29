@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Temporary scratch scripts & audit logs
+scratch/
+
+# System / OS files
+.DS_Store
+Thumbs.db

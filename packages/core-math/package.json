@@ -1,0 +1,21 @@
+{
+  "name": "@pohi-protocol/core-math",
+  "version": "0.1.0-alpha",
+  "description": "Reference Mathematical Engine for the Proof of Human Intent (PoHI) protocol.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "pohi",
+    "proof-of-human-intent",
+    "behavioral-biometrics",
+    "zero-knowledge"
+  ],
+  "author": "Alejandro Gutiérrez",
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
