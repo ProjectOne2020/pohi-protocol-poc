@@ -5,6 +5,22 @@ node_modules/
 dist/
 build/
 
+# Compiled output must never live alongside sources (tsconfig outDir is ./dist)
+packages/*/src/*.js
+packages/*/src/*.d.ts
+packages/*/src/*.d.ts.map
+
+# Circuit build artifacts (regenerable via `npm run circuits:build`)
+circuits/build/
+
+# Ceremony artifacts. Ignored by default so that a local development ceremony is never
+# mistaken for a real one. When an actual multi-party ceremony is held, its transcript and
+# verification key MUST be published: commit them explicitly with
+#   git add -f circuits/ceremony/transcript.json circuits/ceremony/verification_key.json
+# See docs/CEREMONY.md section 5.
+circuits/ceremony/
+circuits/ptau/
+
 # Temporary scratch scripts & audit logs
 scratch/
 

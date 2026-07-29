@@ -2,10 +2,23 @@
   "name": "@pohi-protocol/core-math",
   "version": "0.1.0-alpha",
   "description": "Reference Mathematical Engine for the Proof of Human Intent (PoHI) protocol.",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "npm run build && node --test \"tests/*.test.ts\""
   },
   "keywords": [
     "pohi",

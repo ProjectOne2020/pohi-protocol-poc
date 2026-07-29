@@ -1,0 +1,42 @@
+{
+  "name": "@pohi-protocol/sdk-web",
+  "version": "0.1.0-alpha",
+  "description": "Proof of Human Intent (PoHI) Web Client SDK",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test \"tests/*.test.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProjectOne2020/pohi-protocol-poc.git",
+    "directory": "packages/sdk-web"
+  },
+  "bugs": {
+    "url": "https://github.com/ProjectOne2020/pohi-protocol-poc/issues"
+  },
+  "homepage": "https://github.com/ProjectOne2020/pohi-protocol-poc#readme",
+  "dependencies": {
+    "@pohi-protocol/core-math": "0.1.0-alpha",
+    "snarkjs": "^0.7.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

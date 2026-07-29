@@ -1,0 +1,30 @@
+{
+  "name": "pohi-protocol",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Proof of Human Intent (PoHI) protocol reference implementation monorepo.",
+  "license": "AGPL-3.0-only",
+  "author": "Alejandro Gutiérrez",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProjectOne2020/pohi-protocol-poc.git"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "circuits:build": "node circuits/build.mjs",
+    "circuits:test": "node --test \"circuits/tests/*.test.mjs\"",
+    "ceremony": "node circuits/ceremony.mjs",
+    "experiment": "node experiments/run-evaluation.mjs",
+    "experiment:harness": "node experiments/run-evaluation.mjs --harness",
+    "experiment:test": "node --test \"experiments/tests/*.test.mjs\""
+  },
+  "devDependencies": {
+    "circom2": "^0.2.23",
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.6"
+  }
+}
