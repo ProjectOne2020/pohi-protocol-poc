@@ -9,8 +9,8 @@ import assert from 'node:assert/strict';
 import {
   computeDwellTimeVector,
   computeFlightTimeVector,
-  RawInputEvent,
-} from '../src/index.js';
+} from '../dist/index.js';
+import type { RawInputEvent } from '../dist/index.js';
 
 describe('Equation 3.1: Dwell Time Vector Extraction (computeDwellTimeVector)', () => {
   it('should return an empty array for an empty input sequence', () => {

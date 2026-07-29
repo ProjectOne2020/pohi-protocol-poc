@@ -6,10 +6,8 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  computeSigmoidalNormalizedComponents,
-  ExtractedFeatureMetrics,
-} from '../src/index.js';
+import { computeSigmoidalNormalizedComponents } from '../dist/index.js';
+import type { ExtractedFeatureMetrics } from '../dist/index.js';
 
 describe('Equation 3.6: Sigmoidal Normalization Components (computeSigmoidalNormalizedComponents)', () => {
   it('should return exactly 0.5 for all components when metrics equal reference midpoint values', () => {

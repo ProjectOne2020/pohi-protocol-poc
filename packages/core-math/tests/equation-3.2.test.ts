@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import {
   computeFisherPearsonSkewness,
   MIN_SAMPLE_SIZE_SKEWNESS,
-} from '../src/index.js';
+} from '../dist/index.js';
 
 describe('Equation 3.2: Fisher-Pearson Flight Skewness (computeFisherPearsonSkewness)', () => {
   it('should return 0.0 for an empty flight times input array', () => {

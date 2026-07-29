@@ -10,7 +10,7 @@ import {
   computeExpectedCognitiveLatency,
   LAMBDA_BIO,
   DELTA_COGNITIVE,
-} from '../src/index.js';
+} from '../dist/index.js';
 
 describe('Equation 3.3: Expected Cognitive Latency (computeExpectedCognitiveLatency)', () => {
   it('should return baseline DELTA_COGNITIVE (350 ms) when context length is zero', () => {

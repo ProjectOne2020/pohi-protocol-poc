@@ -6,7 +6,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { computeErrorRecalibrationVariance } from '../src/index.js';
+import { computeErrorRecalibrationVariance } from '../dist/index.js';
 
 describe('Equation 3.5: Error Recalibration Variance (computeErrorRecalibrationVariance)', () => {
   it('should return 0.0 when flightTimes array is empty', () => {

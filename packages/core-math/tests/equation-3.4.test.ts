@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import {
   computeCognitiveAssimilationRatio,
   computeExpectedCognitiveLatency,
-} from '../src/index.js';
+} from '../dist/index.js';
 
 describe('Equation 3.4: Cognitive Assimilation Ratio (computeCognitiveAssimilationRatio)', () => {
   it('should return 0.0 when tauReal is zero', () => {

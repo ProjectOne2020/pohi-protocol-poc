@@ -8,8 +8,6 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   computePoHIScore,
-  ExtractedFeatureMetrics,
-  DomainParameterCalibration,
   PARAM_ESCROW_ALPHA,
   PARAM_ESCROW_BETA,
   PARAM_ESCROW_GAMMA,
@@ -18,7 +16,11 @@ import {
   PARAM_MERCHANT_BETA,
   PARAM_MERCHANT_GAMMA,
   PARAM_MERCHANT_THETA,
-} from '../src/index.js';
+} from '../dist/index.js';
+import type {
+  ExtractedFeatureMetrics,
+  DomainParameterCalibration,
+} from '../dist/index.js';
 
 describe('Equation 3.7: Composite PoHI Score Computation (computePoHIScore)', () => {
   it('should return score equal to 0.5 when metrics match reference midpoints (Phi = 0.5, Psi = 0.5, Omega = 0.5)', () => {
