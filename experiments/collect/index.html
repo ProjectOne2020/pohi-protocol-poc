@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudio de dinámica de tecleo — PoHI</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    max-width: 46rem; margin: 0 auto; padding: 2rem 1.25rem 4rem;
+    line-height: 1.6;
+  }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 1.75rem; }
+  .sub { opacity: .7; margin-top: 0; }
+  .card {
+    border: 1px solid rgba(128,128,128,.35); border-radius: .6rem;
+    padding: 1.25rem; margin: 1.25rem 0;
+  }
+  .prompt {
+    font-size: 1.05rem; padding: 1rem; border-radius: .5rem;
+    background: rgba(128,128,128,.12); margin-bottom: 1rem;
+  }
+  textarea {
+    width: 100%; min-height: 8rem; padding: .75rem; font-size: 1rem;
+    font-family: inherit; border-radius: .5rem;
+    border: 1px solid rgba(128,128,128,.5); background: transparent; color: inherit;
+    box-sizing: border-box;
+  }
+  button {
+    font: inherit; padding: .6rem 1.2rem; border-radius: .5rem; cursor: pointer;
+    border: 1px solid rgba(128,128,128,.5); background: rgba(128,128,128,.15); color: inherit;
+  }
+  button.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  ul { padding-left: 1.2rem; }
+  .yes { color: #16a34a; } .no { color: #dc2626; }
+  .muted { opacity: .7; font-size: .9rem; }
+  .hidden { display: none; }
+  code { background: rgba(128,128,128,.18); padding: .1rem .3rem; border-radius: .25rem; }
+  label { display: block; margin: .4rem 0; }
+  #status { font-size: .9rem; min-height: 1.4rem; }
+  .ok { color: #16a34a; } .warn { color: #d97706; }
+</style>
+</head>
+<body>
+
+<h1>Estudio de dinámica de tecleo</h1>
+<p class="sub">Protocolo Proof of Human Intent (PoHI) — recolección de datos para investigación</p>
+
+<!-- ─────────────────────────── CONSENTIMIENTO ─────────────────────────── -->
+<section id="consent">
+  <div class="card">
+    <h2>Qué se recoge y qué no</h2>
+    <p>Este estudio mide <strong>el ritmo con el que escribes</strong>, no lo que escribes.</p>
+    <ul>
+      <li class="yes"><strong>Sí se guarda:</strong> el instante en que pulsas cada tecla y el instante en que la sueltas, en milisegundos.</li>
+      <li class="yes"><strong>Sí se guarda:</strong> si la tecla fue <code>Retroceso</code> (borrar) o no.</li>
+      <li class="yes"><strong>Sí se guarda:</strong> el tipo de teclado que usas (portátil, móvil…), que tú eliges.</li>
+      <li class="no"><strong>No se guarda:</strong> qué letras pulsaste. El texto que escribas <em>no</em> sale de tu navegador.</li>
+      <li class="no"><strong>No se guarda:</strong> tu nombre, tu correo, tu dirección IP ni ningún identificador personal.</li>
+    </ul>
+    <p>
+      Como sólo se conservan tiempos y una marca de borrado, el texto original
+      <strong>no puede reconstruirse</strong> a partir de estos datos. La base de datos rechaza
+      automáticamente cualquier registro que contenga letras, aunque alguien modificara esta página.
+    </p>
+
+    <h2 id="sendingHeading">Cómo se envían los datos</h2>
+    <p id="sendingText">
+      Al terminar cada texto, los tiempos se envían automáticamente por internet a una base de
+      datos de investigación, para que no tengas que hacer nada más. La conexión va cifrada.
+      Se te asigna un código aleatorio para saber que varios textos vienen de la misma persona,
+      pero ese código <strong>no está ligado a tu identidad</strong> de ninguna forma.
+    </p>
+    <p class="muted">
+      La clave que usa esta página sólo permite <em>añadir</em> registros, nunca leerlos. Ni tú ni
+      nadie que abra esta página puede ver lo que han enviado otras personas.
+    </p>
+
+    <h2>Participación</h2>
+    <p>
+      Es voluntaria y anónima. Puedes cerrar la página cuando quieras. Como no se guarda ningún
+      dato que te identifique, no es posible localizar ni borrar tus envíos después, así que
+      conviene que decidas antes de empezar. Los datos se usarán únicamente para evaluar
+      científicamente el protocolo PoHI y podrán publicarse de forma agregada.
+    </p>
+
+    <h2>Tu dispositivo</h2>
+    <label><input type="radio" name="device" value="desktop-mechanical"> Teclado de sobremesa (mecánico o externo)</label>
+    <label><input type="radio" name="device" value="laptop-scissor"> Teclado de portátil</label>
+    <label><input type="radio" name="device" value="ios-capacitive"> Pantalla táctil iPhone / iPad</label>
+    <label><input type="radio" name="device" value="android-capacitive"> Pantalla táctil Android</label>
+    <label><input type="radio" name="device" value="unknown"> Otro / prefiero no decirlo</label>
+
+    <p style="margin-top:1.5rem">
+      <button class="primary" id="startBtn" disabled>He leído lo anterior y acepto participar</button>
+    </p>
+  </div>
+</section>
+
+<!-- ─────────────────────────── TAREA ─────────────────────────── -->
+<section id="task" class="hidden">
+  <p class="muted" id="progress"></p>
+  <div class="card">
+    <div class="prompt" id="promptText"></div>
+    <textarea id="input" placeholder="Escribe aquí tu respuesta…" autocomplete="off"
+              autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <p style="margin-bottom:.5rem">
+      <button class="primary" id="nextBtn" disabled>Siguiente</button>
+      <span class="muted" id="hint"> — escribe al menos 60 caracteres</span>
+    </p>
+    <p id="status"></p>
+  </div>
+</section>
+
+<!-- ─────────────────────────── FIN ─────────────────────────── -->
+<section id="done" class="hidden">
+  <div class="card">
+    <h2>Listo. Muchas gracias.</h2>
+    <p id="summary"></p>
+    <p id="pendingBox" class="hidden warn">
+      Algunos envíos no salieron (puede ser la conexión).
+      <button id="retryBtn">Reintentar envío</button>
+      o
+      <button id="downloadBtn">descargar y enviármelo</button>.
+    </p>
+    <p class="muted">
+      Si quieres comprobar qué se envió, puedes
+      <button id="inspectBtn">ver los datos</button>. Verás sólo números.
+    </p>
+    <pre id="inspect" class="hidden" style="overflow:auto;max-height:16rem;font-size:.75rem"></pre>
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  // ─────────────────────────────────────────────────────────────────────
+  // CONFIGURACIÓN
+  // Deja SUPABASE_URL vacío para volver al modo de sólo descarga.
+  // ─────────────────────────────────────────────────────────────────────
+  var SUPABASE_URL = 'https://uyhzvcpmvwteaakoudwy.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_vY0AHfAqmILGlM-C2rHjlw_UNYR9Zdx';
+  var STUDY_BATCH  = 'piloto-2026-07';
+
+  var ENDPOINT = SUPABASE_URL ? SUPABASE_URL + '/rest/v1/keystroke_sessions' : null;
+
+  // Textos de longitud variada, de modo que context_length (L_in) de la Ec. 3.3 varíe.
+  var PROMPTS = [
+    'Cuéntame qué hiciste el fin de semana pasado.',
+    'Describe con tus palabras el último sitio al que viajaste, o al que te gustaría viajar. Explica por qué te llamó la atención y qué es lo que más recuerdas de ese lugar.',
+    '¿Qué comida te gusta más y cómo se prepara?',
+    'Imagina que tienes que explicarle a alguien que nunca ha usado un ordenador cómo se envía un correo electrónico. Escribe esa explicación paso a paso, con el detalle que te parezca necesario para que se entienda bien.',
+    'Escribe sobre una película o serie que hayas visto hace poco.',
+    'Piensa en algo que hayas aprendido en el último año, dentro o fuera del trabajo, y explica cómo lo aprendiste y para qué te ha servido desde entonces.'
+  ];
+
+  var MIN_CHARS = 60;
+  var QUEUE_KEY = 'pohi.pendingSessions';
+  var TOKEN_KEY = 'pohi.participantToken';
+
+  var deviceClass = null;
+  var promptIndex = 0;
+  var sent = 0;
+  var collected = [];
+  var events = [];
+  var renderTime = 0;
+  var active = new Map();
+
+  var $ = function (id) { return document.getElementById(id); };
+  function now() { return performance.timeOrigin + performance.now(); }
+
+  function randomId(prefix) {
+    if (crypto.randomUUID) return prefix + crypto.randomUUID();
+    return prefix + Math.random().toString(36).slice(2) + Date.now().toString(36);
+  }
+
+  // Token estable por participante: enlaza sus sesiones entre sí sin identificarle.
+  function participantToken() {
+    var token = null;
+    try { token = localStorage.getItem(TOKEN_KEY); } catch (e) {}
+    if (!token) {
+      token = randomId('p-');
+      try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+    }
+    return token;
+  }
+
+  // ── Cola persistente: un envío fallido sobrevive a recargar la página ──
+  function readQueue() {
+    try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function writeQueue(q) {
+    try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch (e) {}
+  }
+  function enqueue(row) { var q = readQueue(); q.push(row); writeQueue(q); }
+
+  function postRow(row) {
+    if (!ENDPOINT) return Promise.reject(new Error('sin endpoint'));
+    return fetch(ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(row)
+    }).then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { throw new Error(res.status + ' ' + t); });
+      return true;
+    });
+  }
+
+  function flushQueue() {
+    var q = readQueue();
+    if (q.length === 0) return Promise.resolve(0);
+    var remaining = [];
+    var okCount = 0;
+    return q.reduce(function (chain, row) {
+      return chain.then(function () {
+        return postRow(row).then(function () { okCount++; })
+          .catch(function () { remaining.push(row); });
+      });
+    }, Promise.resolve()).then(function () {
+      writeQueue(remaining);
+      return okCount;
+    });
+  }
+
+  function setStatus(text, cls) {
+    var el = $('status');
+    el.textContent = text;
+    el.className = cls || '';
+  }
+
+  // ── Consentimiento ──
+  if (!ENDPOINT) {
+    $('sendingHeading').textContent = 'Cómo se entregan los datos';
+    $('sendingText').innerHTML =
+      'Esta copia no envía nada por internet. Al terminar descargarás un archivo y decides ' +
+      'tú si lo compartes.';
+  }
+
+  Array.prototype.forEach.call(document.getElementsByName('device'), function (radio) {
+    radio.addEventListener('change', function () {
+      deviceClass = radio.value;
+      $('startBtn').disabled = false;
+    });
+  });
+
+  $('startBtn').addEventListener('click', function () {
+    $('consent').classList.add('hidden');
+    $('task').classList.remove('hidden');
+    flushQueue();
+    showPrompt();
+  });
+
+  // ── Captura ──
+  var input = $('input');
+
+  input.addEventListener('keydown', function (ev) {
+    if (ev.isComposing || ev.repeat) return;
+    var key = ev.key;
+    if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock'].indexOf(key) !== -1) return;
+    if (!active.has(key)) active.set(key, now());
+  });
+
+  input.addEventListener('keyup', function (ev) {
+    var key = ev.key;
+    if (!active.has(key)) return;
+    var pressTime = active.get(key);
+    active.delete(key);
+    events.push({ isBackspace: key === 'Backspace', pressTime: pressTime, releaseTime: now() });
+  });
+
+  input.addEventListener('touchstart', function () {
+    if (!active.has('__touch')) active.set('__touch', now());
+  }, { passive: true });
+
+  input.addEventListener('touchend', function () {
+    if (!active.has('__touch')) return;
+    var pressTime = active.get('__touch');
+    active.delete('__touch');
+    events.push({ isBackspace: false, pressTime: pressTime, releaseTime: now() });
+  }, { passive: true });
+
+  input.addEventListener('input', function () {
+    var enough = input.value.length >= MIN_CHARS && events.length >= 12;
+    $('nextBtn').disabled = !enough;
+    $('hint').textContent = enough ? '' : ' — escribe al menos ' + MIN_CHARS + ' caracteres';
+  });
+
+  // ── Flujo ──
+  function showPrompt() {
+    events = [];
+    active.clear();
+    input.value = '';
+    $('nextBtn').disabled = true;
+    $('promptText').textContent = PROMPTS[promptIndex];
+    $('progress').textContent = 'Texto ' + (promptIndex + 1) + ' de ' + PROMPTS.length;
+    $('hint').textContent = ' — escribe al menos ' + MIN_CHARS + ' caracteres';
+
+    // t_render de la Ec. 3.3: instante en que el texto queda pintado en pantalla.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        renderTime = now();
+        input.focus();
+      });
+    });
+  }
+
+  $('nextBtn').addEventListener('click', function () {
+    $('nextBtn').disabled = true;
+    events.sort(function (a, b) { return a.pressTime - b.pressTime; });
+
+    var row = {
+      schema_version: 1,
+      study_batch: STUDY_BATCH,
+      session_id: randomId('s-'),
+      participant_token: participantToken(),
+      device: deviceClass,
+      context_length: PROMPTS[promptIndex].length,
+      render_time: renderTime,
+      events: events.slice(),
+      event_count: events.length,
+      client_collected_at: new Date().toISOString()
+    };
+
+    collected.push(row);
+
+    var advance = function () {
+      promptIndex += 1;
+      if (promptIndex < PROMPTS.length) showPrompt(); else finish();
+    };
+
+    if (!ENDPOINT) { advance(); return; }
+
+    setStatus('Enviando…');
+    postRow(row)
+      .then(function () { sent++; setStatus('Enviado ✓', 'ok'); })
+      .catch(function () {
+        enqueue(row);
+        setStatus('Sin conexión: se enviará automáticamente más tarde.', 'warn');
+      })
+      .then(advance);
+  });
+
+  function finish() {
+    $('task').classList.add('hidden');
+    $('done').classList.remove('hidden');
+
+    var totalEvents = collected.reduce(function (a, s) { return a + s.event_count; }, 0);
+    var pending = readQueue().length;
+
+    if (!ENDPOINT) {
+      $('summary').textContent =
+        'Se registraron ' + collected.length + ' textos y ' + totalEvents +
+        ' pulsaciones. Ni una sola letra fue guardada.';
+      $('pendingBox').classList.remove('hidden');
+      return;
+    }
+
+    $('summary').textContent =
+      'Se enviaron ' + sent + ' de ' + collected.length + ' textos (' + totalEvents +
+      ' pulsaciones en total). Ni una sola letra fue guardada.';
+
+    if (pending > 0) $('pendingBox').classList.remove('hidden');
+  }
+
+  $('retryBtn').addEventListener('click', function () {
+    $('retryBtn').disabled = true;
+    flushQueue().then(function (ok) {
+      sent += ok;
+      var pending = readQueue().length;
+      $('summary').textContent =
+        'Se enviaron ' + sent + ' de ' + collected.length + ' textos.';
+      if (pending === 0) $('pendingBox').classList.add('hidden');
+      $('retryBtn').disabled = false;
+    });
+  });
+
+  $('inspectBtn').addEventListener('click', function () {
+    var box = $('inspect');
+    box.classList.toggle('hidden');
+    box.textContent = JSON.stringify(collected, null, 1);
+  });
+
+  $('downloadBtn').addEventListener('click', function () {
+    var corpus = {
+      schemaVersion: 1,
+      provenance: 'human',
+      source: 'collection-page',
+      notes: 'Recogido con consentimiento informado. Sin identidades de tecla.',
+      createdAt: new Date().toISOString(),
+      sessions: collected.map(function (r) {
+        return {
+          sessionId: r.session_id,
+          collectedAt: r.client_collected_at,
+          participantId: r.participant_token,
+          device: r.device,
+          contextLength: r.context_length,
+          renderTime: r.render_time,
+          events: r.events
+        };
+      })
+    };
+    var blob = new Blob([JSON.stringify(corpus, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'pohi-tecleo-' + Date.now() + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Reintenta lo pendiente en cuanto vuelva la conexión.
+  window.addEventListener('online', flushQueue);
+})();
+</script>
+
+</body>
+</html>

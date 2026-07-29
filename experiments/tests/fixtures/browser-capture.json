@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "provenance": "human",
+  "source": "collection-page (captured in-browser during verification)",
+  "notes": "Fixture recorded from experiments/collect/index.html to pin the wire format. Timestamps are normalised to a renderTime origin of 0. Two sessions only; this is a format fixture, not a dataset.",
+  "createdAt": "2026-07-29T00:00:00.000Z",
+  "sessions": [
+    {
+      "sessionId": "browser-fixture-0",
+      "collectedAt": "2026-07-29T00:00:00.000Z",
+      "participantId": "anonymous",
+      "device": "laptop-scissor",
+      "contextLength": 45,
+      "renderTime": 0,
+      "events": [
+        { "isBackspace": false, "pressTime": 10410.4, "releaseTime": 10415.4 },
+        { "isBackspace": false, "pressTime": 10418.5, "releaseTime": 10426.5 },
+        { "isBackspace": false, "pressTime": 10433.5, "releaseTime": 10444.5 },
+        { "isBackspace": false, "pressTime": 10455.5, "releaseTime": 10469.5 },
+        { "isBackspace": false, "pressTime": 10508.5, "releaseTime": 10516.5 },
+        { "isBackspace": false, "pressTime": 10519.5, "releaseTime": 10530.5 },
+        { "isBackspace": false, "pressTime": 10537.5, "releaseTime": 10551.5 },
+        { "isBackspace": true, "pressTime": 10562.5, "releaseTime": 10567.5 },
+        { "isBackspace": false, "pressTime": 10582.5, "releaseTime": 10590.6 },
+        { "isBackspace": false, "pressTime": 10609.6, "releaseTime": 10620.6 },
+        { "isBackspace": false, "pressTime": 10623.6, "releaseTime": 10637.6 },
+        { "isBackspace": false, "pressTime": 10660.7, "releaseTime": 10668.7 },
+        { "isBackspace": false, "pressTime": 10683.7, "releaseTime": 10694.7 },
+        { "isBackspace": false, "pressTime": 10713.7, "releaseTime": 10727.7 },
+        { "isBackspace": false, "pressTime": 10730.7, "releaseTime": 10735.7 },
+        { "isBackspace": false, "pressTime": 46527.5, "releaseTime": 46531.5 },
+        { "isBackspace": false, "pressTime": 46533.6, "releaseTime": 46541.6 },
+        { "isBackspace": false, "pressTime": 46548.6, "releaseTime": 46560.6 },
+        { "isBackspace": false, "pressTime": 46572.6, "releaseTime": 46576.6 },
+        { "isBackspace": false, "pressTime": 46593.6, "releaseTime": 46601.6 },
+        { "isBackspace": true, "pressTime": 46623.6, "releaseTime": 46635.6 },
+        { "isBackspace": false, "pressTime": 46662.6, "releaseTime": 46666.6 },
+        { "isBackspace": false, "pressTime": 46668.6, "releaseTime": 46676.7 },
+        { "isBackspace": false, "pressTime": 46683.7, "releaseTime": 46695.7 },
+        { "isBackspace": false, "pressTime": 46707.8, "releaseTime": 46711.9 },
+        { "isBackspace": false, "pressTime": 46728.9, "releaseTime": 46737 },
+        { "isBackspace": false, "pressTime": 46759, "releaseTime": 46771 },
+        { "isBackspace": false, "pressTime": 46798, "releaseTime": 46802 },
+        { "isBackspace": false, "pressTime": 46804, "releaseTime": 46812 }
+      ]
+    },
+    {
+      "sessionId": "browser-fixture-1",
+      "collectedAt": "2026-07-29T00:00:00.000Z",
+      "participantId": "anonymous",
+      "device": "laptop-scissor",
+      "contextLength": 168,
+      "renderTime": 46819.7,
+      "events": [
+        { "isBackspace": false, "pressTime": 46819.7, "releaseTime": 46823.7 },
+        { "isBackspace": false, "pressTime": 46825.7, "releaseTime": 46833.7 },
+        { "isBackspace": false, "pressTime": 46840.7, "releaseTime": 46852.7 },
+        { "isBackspace": false, "pressTime": 46864.7, "releaseTime": 46868.7 },
+        { "isBackspace": false, "pressTime": 46885.7, "releaseTime": 46893.7 },
+        { "isBackspace": true, "pressTime": 46915.7, "releaseTime": 46927.7 },
+        { "isBackspace": false, "pressTime": 46954.7, "releaseTime": 46958.7 },
+        { "isBackspace": false, "pressTime": 46960.7, "releaseTime": 46968.7 },
+        { "isBackspace": false, "pressTime": 46975.7, "releaseTime": 46987.7 },
+        { "isBackspace": false, "pressTime": 46999.7, "releaseTime": 47003.7 },
+        { "isBackspace": false, "pressTime": 47020.7, "releaseTime": 47028.7 },
+        { "isBackspace": false, "pressTime": 47050.7, "releaseTime": 47062.7 },
+        { "isBackspace": false, "pressTime": 47089.7, "releaseTime": 47093.7 },
+        { "isBackspace": false, "pressTime": 47095.7, "releaseTime": 47103.7 }
+      ]
+    }
+  ]
+}
