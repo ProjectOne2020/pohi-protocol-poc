@@ -52,7 +52,72 @@
 <!-- ─────────────────────────── CONSENTIMIENTO ─────────────────────────── -->
 <section id="consent">
   <div class="card">
-    <h2>Qué se recoge y qué no</h2>
+    <h2 style="margin-top:0">De qué va esto</h2>
+    <p>
+      La inteligencia artificial ya escribe textos que no se distinguen de los que escribe una
+      persona. Eso significa que <strong>leer un mensaje ya no sirve para saber si lo escribió
+      un humano o un programa</strong>, y de ahí vienen buena parte de las estafas
+      automatizadas, las cuentas falsas y el spam que hoy inunda internet.
+    </p>
+    <p>
+      Esta investigación propone mirar a otro sitio: no <em>qué</em> se escribe, sino
+      <strong>cómo</strong> se escribe. Una persona teclea con un ritmo irregular — se detiene a
+      pensar, se equivoca y corrige, tiene un pulso que no es perfectamente regular. Un programa
+      no tiene dedos, ni músculos que se cansen, ni que releer la pregunta. La idea es medir esa
+      fricción física, que es difícil de imitar, en lugar del texto, que ya no lo es.
+    </p>
+    <p>
+      La segunda mitad de la idea es la privacidad: todo el cálculo ocurre en tu propio
+      dispositivo, y lo único que saldría de él sería una prueba criptográfica de que el
+      resultado es correcto — nunca tus datos. A eso se le llama <em>prueba de conocimiento
+      cero</em>, y es lo que permite demostrar algo sin revelar nada.
+    </p>
+
+    <h2>Para qué necesito tu ayuda</h2>
+    <p>
+      Ahora mismo todo esto es una <strong>hipótesis sin comprobar</strong>. Está la teoría, están
+      las matemáticas y está el software funcionando, pero falta lo más importante: los datos.
+    </p>
+    <p>
+      Necesito saber cómo teclean personas reales para poder responder la pregunta que de verdad
+      importa, y que voy a intentar responder <em>en mi contra</em>: <strong>¿puede un programa
+      barato imitar el ritmo humano y colarse?</strong> Para averiguarlo necesito dos cosas —
+      tecleo humano auténtico (el tuyo) y tecleo falso generado por mí — y comparar cuántas veces
+      el sistema se equivoca.
+    </p>
+    <p>
+      Si el resultado es que se cuela, lo publicaré igual. Un método que nadie ha intentado
+      romper no vale nada, y prefiero encontrar el fallo yo antes de que lo encuentre otro.
+      Por eso tus seis textos son valiosos: sin ellos no hay experimento.
+    </p>
+    <p class="muted">
+      Te llevará unos cinco minutos. No hay respuestas correctas ni incorrectas, y nadie va a
+      leer lo que escribas — literalmente no se guarda.
+    </p>
+
+    <h2>Quién está detrás</h2>
+    <p>
+      Me llamo <strong>Alejandro Gutiérrez</strong> y soy el autor de esta investigación. La hago
+      por mi cuenta, no hay ninguna empresa detrás, y todo el trabajo es público y auditable.
+    </p>
+    <ul>
+      <li>Escríbeme si tienes cualquier duda:
+        <a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a></li>
+      <li><a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/"
+             target="_blank" rel="noopener noreferrer">Mi perfil de LinkedIn</a></li>
+      <li>Código y documentación completos:
+        <a href="https://github.com/ProjectOne2020/pohi-protocol-poc"
+           target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a></li>
+    </ul>
+    <p class="muted">
+      En ese repositorio está exactamente esta página, la base de datos donde acaban los datos y
+      las reglas que impiden guardar tu texto. Puedes comprobar por ti mismo que lo que dice
+      aquí abajo es cierto, sin tener que fiarte de mi palabra.
+    </p>
+
+    <hr style="border:none;border-top:1px solid rgba(128,128,128,.3);margin:1.75rem 0">
+
+    <h2 style="margin-top:0">Qué se recoge y qué no</h2>
     <p>Este estudio mide <strong>el ritmo con el que escribes</strong>, no lo que escribes.</p>
     <ul>
       <li class="yes"><strong>Sí se guarda:</strong> el instante en que pulsas cada tecla y el instante en que la sueltas, en milisegundos.</li>
@@ -131,6 +196,24 @@
       <button id="inspectBtn">ver los datos</button>. Verás sólo números.
     </p>
     <pre id="inspect" class="hidden" style="overflow:auto;max-height:16rem;font-size:.75rem"></pre>
+
+    <hr style="border:none;border-top:1px solid rgba(128,128,128,.3);margin:1.5rem 0">
+
+    <p>
+      Acabas de contribuir a comprobar si esta idea funciona de verdad. Si te interesa, el
+      resultado del experimento —salga como salga— se publicará aquí:
+    </p>
+    <ul>
+      <li><a href="https://github.com/ProjectOne2020/pohi-protocol-poc"
+             target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a></li>
+      <li><a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/"
+             target="_blank" rel="noopener noreferrer">Alejandro Gutiérrez en LinkedIn</a></li>
+      <li><a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a></li>
+    </ul>
+    <p class="muted">
+      Y si conoces a alguien que pueda dedicarle cinco minutos, compartir el enlace ayuda más
+      que nada: cuantas más personas distintas, más sólido es el resultado.
+    </p>
   </div>
 </section>
 
