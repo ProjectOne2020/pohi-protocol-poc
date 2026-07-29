@@ -372,9 +372,24 @@
   }, { passive: true });
 
   input.addEventListener('input', function () {
-    var enough = input.value.length >= MIN_CHARS && events.length >= 12;
-    $('nextBtn').disabled = !enough;
-    $('hint').textContent = enough ? '' : ' — escribe al menos ' + MIN_CHARS + ' caracteres';
+    // Solo exigimos >=1 evento para no violar la restricción de la base de datos
+    // (event_count debe ser >=1). El filtro real de calidad (>=11 eventos, el mínimo
+    // de la Ecuación 3.2) ocurre después, al exportar el corpus — no aquí. Exigir más
+    // aquí bloqueaba a personas que usan predicción de texto, autocompletado, "swipe
+    // typing" o dictado por voz: esos métodos cambian el texto sin disparar keydown/keyup.
+    var longEnough = input.value.length >= MIN_CHARS;
+    var hasEvents = events.length >= 1;
+    $('nextBtn').disabled = !(longEnough && hasEvents);
+
+    if (!longEnough) {
+      $('hint').textContent = ' — escribe al menos ' + MIN_CHARS + ' caracteres';
+    } else if (!hasEvents) {
+      $('hint').textContent =
+        ' — no detectamos pulsaciones de tecla. Si usas predicción de texto, autocompletar ' +
+        'o dictado por voz, prueba escribiendo algunas letras manualmente.';
+    } else {
+      $('hint').textContent = '';
+    }
   });
 
   // ── Flujo ──
