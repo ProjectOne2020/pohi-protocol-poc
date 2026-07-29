@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this protocol or research whitepaper in your work, please cite it using the metadata from this file."
+type: software
+title: "Proof of Human Intent (PoHI): A Privacy-Preserving Behavioral Protocol for Human Intent Verification in AI-Mediated Digital Transactions"
+authors:
+  - family-names: "Gutiérrez"
+    given-names: "Alejandro"
+    email: "alejandro.gutierrezb31@gmail.com"
+  - name: "Protocol Research Group"
+  - name: "Security Architecture Taskforce"
+repository-code: "https://github.com/ProjectOne2020/pohi-protocol-poc"
+license: "AGPL-3.0"
+date-released: "2026-07-01"
+keywords:
+  - "computer-security"
+  - "applied-cryptography"
+  - "behavioral-biometrics"
+  - "zero-knowledge-proofs"
+  - "zk-snark"
+  - "groth16"
+  - "proof-of-human-intent"
+  - "sybil-resistance"
+  - "neuromuscular-entropy"
+abstract: "The rapid proliferation of Autonomous AI Agents and Generative Foundation Models has fundamentally ruptured the historical assumption of symmetric cognitive friction in peer-to-peer (P2P) digital interaction. Proof of Human Intent (PoHI) is a privacy-preserving, serverless behavioral protocol that shifts identity attestation from post-execution semantic analysis to pre-execution neuromuscular and cognitive input entropy. PoHI quantifies irreducible biological friction—specifically high-frequency keypress dwell/flight times, motor asymmetry evaluated via Fisher-Pearson skewness metrics, cognitive assimilation latencies, and stochastic correction dynamics—directly on the client device, compiling telemetry into succinct zk-SNARK proofs."
