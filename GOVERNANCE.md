@@ -52,6 +52,11 @@ Any breaking change to core mathematical formulas (Equations 3.1–3.7), R1CS ar
 2. **Review & Discussion**: A minimum 14-day public review period for community and researcher feedback.
 3. **Consensus & Approval**: Approval requires unanimous consensus among the Protocol Steering Committee following security audit verification.
 
+The PSP register is maintained at [docs/psp/](docs/psp/README.md). Proposals are recorded there with their status; no release may be certified while a PSP affecting it remains unratified.
+
+### Trusted Setup Authority
+Release authorization for core ZK circuits (Section 2.1) includes authority over the Groth16 trusted setup. Any change to the constraint system invalidates the existing proving key and requires a new ceremony under [docs/CEREMONY.md](docs/CEREMONY.md). A release whose ceremony transcript is unpublished or whose phase-1 contribution is not production-grade must not be certified.
+
 ---
 
 ## 4. Conflict Resolution & Code of Conduct

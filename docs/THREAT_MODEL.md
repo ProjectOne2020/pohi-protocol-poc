@@ -88,8 +88,68 @@ flowchart TD
 
 ---
 
-## 5. Cross-References
+## 5. The Witness Authenticity Gap
+
+> [!CAUTION]
+> This section records a limitation of the protocol design that is **not** mitigated by any
+> implementation work, and that materially qualifies threat vectors 2, 4, 6, 7, 10, 12, 13
+> and 14 above. It is stated here rather than omitted because the credibility of the whole
+> threat model depends on it being addressed openly.
+
+### 5.1 Statement of the Gap
+
+A zk-SNARK proves that the prover knows a witness $\mathbf{w}$ satisfying a public relation. The PoHI circuit proves:
+
+$$\exists\, \mathbf{w} = \{\mathbf{D}, \mathbf{F}, \tau_{real}, \mathcal{I}_{back}\} \ :\ S_{PoHI}(\mathbf{w}) \ge \theta$$
+
+It does **not** prove that $\mathbf{w}$ was produced by a human finger striking a key. The circuit receives numbers; it cannot observe their provenance.
+
+Threat vector 14 states the adversarial limitation as *"ZK Prover cannot generate valid proof $Z_p$ without true witness"* and mitigates it by the computational soundness of Groth16. This reasoning does not hold. Groth16 soundness prevents proving a **false** statement. An adversary who fabricates a timing vector is proving a **true** statement — that those particular values score above the threshold — and obtains a cryptographically valid proof. No forgery of the proof system occurs, and none is needed.
+
+The adversary does not require kernel access, WASM patching, or any tampering at all. It suffices to call the prover with chosen inputs.
+
+### 5.2 Cost of Fabricating a Passing Witness
+
+Threat vector 12 assigns the GAN adversary the limitation *"High GPU inference latency per keypress; breaks real-time bounds."* This assumes timing must be synthesised **online**, one keystroke at a time. It need not be. An adversary can:
+
+1. Fit a distribution to a public keystroke corpus offline. Such corpora exist and are cited in this work's own bibliography.
+2. Sample a flight vector from the fitted distribution — arithmetic on the order of microseconds, performed once.
+3. Choose $\tau_{real}$ to place $R_{cog}$ anywhere desired; waiting is free, and the value is simply a number in the witness.
+4. Set the correction mask and its adjacent flight times to produce any target $\sigma^2_{err}$.
+5. Submit the vector to the prover.
+
+Each of the three components of Equation 3.7 is independently and cheaply controllable in this model. The realistic marginal cost per session is therefore the **proving cost alone** — approximately 1.2 s of client compute — not the $C_{LLM} + C_{sim} + C_{ZK} + \Delta_{infra}$ of Chapter 9.
+
+This weakens, but does not eliminate, Proposition 9.1: proving cost is still strictly greater than the $\$0.001$ of raw API injection, so the equilibrium shifts. It does not shift as far as $Cost_{attack}^{PoHI} > VER_{fraud}$ for high-value fraud.
+
+### 5.3 What the Protocol Does and Does Not Guarantee
+
+| Claim | Status |
+| :--- | :--- |
+| Raw telemetry never leaves the client | **Guaranteed** (Theorem 7.1, zero-knowledge property) |
+| A proof cannot be replayed across sessions | **Guaranteed** (session commitment bound into the R1CS) |
+| A failing session cannot yield `is_human = 1` | **Guaranteed** (circuit soundness, given an honest trusted setup) |
+| Unsophisticated automation is rejected | **Guaranteed** (API injection, isochronous macros, naive replay all score below threshold) |
+| The witness reflects genuine physical input | **NOT guaranteed** — no software-only mechanism can establish this |
+
+The correct characterisation of PoHI is therefore a **cost-raising and friction-restoring mechanism with strong privacy guarantees**, not an unforgeable proof of human presence. Claims of unforgeability elsewhere in this repository are to be read as applying to the *proof system*, never to the *provenance of the witness*.
+
+### 5.4 Research Directions That Would Close the Gap
+
+The gap is closed only by anchoring the witness to something the adversary cannot fabricate:
+
+1. **Hardware-attested timestamps** — signing raw sensor events inside ARM TrustZone or a Secure Enclave before witness compilation, and verifying the attestation signature in-circuit. Listed as future work in Chapter 12; it is in fact the load-bearing mitigation for this gap rather than an optional enhancement.
+2. **Verifier-supplied timing challenges** — binding an unpredictable nonce, issued by the verifier at render time, into $t_{render}$, so $\tau_{real}$ measures an interval the prover could not have precomputed. This constrains one component without breaking the air-gap.
+3. **Cross-session distributional consistency** — an adversary sampling independently per session produces a population distribution distinguishable from a single human's, at the cost of introducing linkable state and thus weakening the privacy properties.
+4. **Empirical characterisation of the attack** — the honest scientific step: implement the offline-generation adversary and measure the achieved false acceptance rate. Until this is done, the practical strength of the protocol against a competent adversary is unmeasured.
+
+Direction 4 is a prerequisite for any quantitative security claim in Chapter 9.
+
+---
+
+## 6. Cross-References
 
 - For system component architecture, see [ARCHITECTURE.md](ARCHITECTURE.md).
 - For protocol workflow details, see [PROTOCOL.md](PROTOCOL.md).
 - For cryptographic circuit constraints, see [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md).
+- For the trusted setup that underwrites Theorem 7.2, see [CEREMONY.md](CEREMONY.md).

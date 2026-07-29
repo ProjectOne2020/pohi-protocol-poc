@@ -42,20 +42,51 @@ flowchart TD
 - `context_length`: Character length $L_{in}$ of the prompt context payload.
 - `session_hash`: Cryptographic commitment $H(\text{Session\_ID} \parallel \text{User\_Address})$.
 - `timestamp`: Session completion epoch timestamp.
+- `alpha`, `beta`, `gamma`: Equation 3.7 domain calibration weights ($10^6$ multiplier).
+
+The calibration weights are public because they constitute the verifier's security policy; see [PROTOCOL.md](PROTOCOL.md) Section 3.1.
 
 ### 2.2 Private Witness Signals ($w$)
 - `flight_times[N-1]`: Array of private inter-key flight latencies in milliseconds.
 - `dwell_times[N]`: Array of private key actuation dwell times in milliseconds.
 - `tau_real`: Measured cognitive assimilation latency in milliseconds.
+- `backspace_selector[N-1]`: Boolean mask encoding the Equation 3.5 index set $\mathcal{I}_{back}$.
+
+The dwell vector is part of the documented witness (Equation 3.1) and is range-checked, but does not enter $S_{PoHI}$: Equation 3.7 is a function of $S_F$, $R_{cog}$ and $\sigma^2_{err}$ only.
 
 ### 2.3 Constraint Operations & Polynomial Approximations
-1. **Moment Accumulator Constraints**: Computes variance $m_2$ and third moment $m_3$ over `flight_times` using fixed-point integer arithmetic (scaling factor $10^6$).
-2. **Fixed-Point Sigmoid Approximation**: Implements 5th-degree minimax polynomial approximations for sigmoidal functions $(\Phi, \Psi, \Omega)$ over finite field $\mathbb{F}_p$:
-   $$P_{sig}(x) \approx c_0 + c_1 x + c_2 x^2 + c_3 x^3 + c_4 x^4 + c_5 x^5$$
-3. **Threshold Comparator Constraint**: Computes score $S_{PoHI}$ and enforces the boolean inequality constraint using a bit-decomposition less-than operator (`LessThan(64)`):
-   $$\text{LessThan}(64)\left( \text{threshold\_theta}, S_{PoHI} \right) === 1$$
+1. **Moment Accumulator Constraints**: Computes variance $m_2$ and third moment $m_3$ over `flight_times` using fixed-point integer arithmetic. Deviations are carried at an internal precision of $10^{-3}$ ms; the scale factors cancel exactly in the ratio $S_F = m_3 / m_2^{3/2}$, so no residual correction is applied. The $3/2$ power is evaluated as $m_2 \cdot \lfloor\sqrt{m_2}\rfloor$, with the integer square root constrained by $s^2 \le m_2 < (s+1)^2$.
+2. **Fixed-Point Sigmoid Approximation**: Implements a 5th-degree polynomial approximation of the logistic function over finite field $\mathbb{F}_p$. Because $\sigma(z) - 0.5$ is odd, the approximation is restricted to the odd basis, which removes $c_0$, $c_2$ and $c_4$ and makes $P(0) = 0.5$ hold exactly:
+   $$P_{sig}(z) \approx 0.5 + c_1 z + c_3 z^3 + c_5 z^5$$
+   The coefficients are **derived, not chosen**: `circuits/tools/derive_sigmoid_coefficients.mjs` fits them to the $\kappa$ and reference values fixed by `@pohi-protocol/core-math` using Iteratively Reweighted Least Squares driven to the minimax criterion. The solution equioscillates at $\pm 0.011790$, confirming minimax optimality for this basis.
+3. **Saturation Clamping**: A degree-5 polynomial cannot represent the sigmoid tails, so evaluation is clamped to $|z| \le 5$ and the output is clamped to $[0, 1]$ as Equation 3.6 requires.
+4. **Proved Integer Division**: Every rescaling is a constrained integer division proving $\text{numerator} = q \cdot d + r$ with $0 \le r < d$ and both $q, r$ bit-decomposed. Circom's `/` operator is *field* division and cannot be used for fixed-point rescaling: `q <-- a/SCALE; q*SCALE === a;` is tautological and constrains nothing.
+5. **Threshold Comparator Constraint**: Computes score $S_{PoHI}$ and enforces the validity assertion using a genuine bit-decomposition comparator (circomlib `GreaterEqThan(64)`, built on `Num2Bits`):
+   $$b_{valid} = \left( S_{PoHI} \ge \text{threshold\_theta} \right)$$
+   A finite field has no native order, so a comparison written as `out <-- a > b ? 1 : 0` produces no constraint binding `out` to the operands and must never be used.
 
-Total circuit constraint count for an $N=30$ character input session: **$\approx 14,250$ R1CS constraints** under BN254 curve geometry.
+### 2.4 Measured Circuit Complexity
+
+Compiled with `circom 2.2.3` for $N = 30$ (`npm run circuits:build`):
+
+| Metric | Value |
+| :--- | :--- |
+| Curve | BN254 (`bn-128`) |
+| Total R1CS constraints | **11,170** |
+| Non-linear constraints | 10,682 |
+| Linear constraints | 488 |
+| Wires | 11,016 |
+| Public inputs | 7 |
+| Private inputs | 89 |
+| Public outputs | 1 (`is_human`) |
+
+### 2.5 Numerical Accuracy Bound
+
+The degree-5 approximation mandated above has a worst-case error of $0.0122$ against the exact logistic function. Since $S_{PoHI}$ is a convex combination of three such approximations, the composite score inherits the same bound:
+
+$$\left| S_{PoHI}^{circuit} - S_{PoHI}^{exact} \right| \le 0.0122$$
+
+Sessions whose exact score lies within $0.0122$ of $\theta$ may therefore be classified differently by the circuit and by the reference engine. Narrowing this band requires raising the polynomial degree, which is a change to the whitepaper specification and thus a Protocol Specification Proposal (see [GOVERNANCE.md](../GOVERNANCE.md)).
 
 ---
 

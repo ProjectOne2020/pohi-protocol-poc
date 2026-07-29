@@ -620,10 +620,23 @@ To enforce scientific rigor without publishing fictional results, empirical vali
 
 Current implementation status across primary core packages:
 
+- `@pohi-protocol/core-math`: Reference mathematical engine, Equations 3.1–3.7 *(Implemented, 74 unit tests)*.
 - `@pohi-protocol/sdk-web`: TypeScript browser tracking & WASM witness wrapper *(Active Development)*.
-- `@pohi-protocol/sdk-mobile`: Native iOS (Swift) & Android (Kotlin) bindings *(Active Development)*.
-- `@pohi-protocol/contracts`: Solidity 0.8.20 smart contracts (`PoHIEscrow.sol`) *(Active Development)*.
-- `circuits/`: Circom R1CS Groth16 zero-knowledge circuit definitions *(Active Development)*.
+- `circuits/`: Circom R1CS Groth16 zero-knowledge circuit definitions *(Implemented, compiles to 11,170 constraints; 15 fidelity/soundness tests)*.
+- `@pohi-protocol/sdk-mobile`: Native iOS (Swift) & Android (Kotlin) bindings *(Reserved for future implementation)*.
+- `@pohi-protocol/contracts`: Solidity 0.8.20 smart contracts (`PoHIEscrow.sol`) *(Specified in this document; not yet present in the repository)*.
+- Stateless ZK-Oracle REST API: *(Specified in this document; not yet present in the repository)*.
+
+### Building and testing
+
+```bash
+npm install && npm test && npm run circuits:build && npm run circuits:test
+```
+
+> [!WARNING]
+> `npm run circuits:build` performs a **local development** trusted setup with deterministic
+> entropy so the circuit can be proved and verified reproducibly. The resulting `.zkey` is not
+> production-safe; a real deployment requires a multi-party ceremony.
 
 ---
 

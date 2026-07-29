@@ -116,3 +116,136 @@ Submits proof $Z_p$ to Solidity smart contract. Verifies Groth16 proof directly 
 - For execution sequence workflows, see [PROTOCOL.md](PROTOCOL.md).
 - For R1CS constraint specifications, see [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md).
 - For formal threat vector analyses, see [THREAT_MODEL.md](THREAT_MODEL.md).
+
+---
+
+## 6. Web Client SDK Specification (`@pohi-protocol/sdk-web`)
+
+### 6.1 Public API & Exported Symbols
+
+The `@pohi-protocol/sdk-web` package exports a thread-safe, modular API surface:
+
+```typescript
+/**
+ * Configuration options for initializing a browser PoHI session.
+ */
+export interface PoHISDKConfig {
+  /** Prompt context character length L_in. */
+  readonly contextLength: number;
+  /** Cryptographic commitment hash H(Session_ID || User_Address). */
+  readonly sessionHash: string;
+  /** Optional domain calibration parameters (defaults to Escrow parameters). */
+  readonly calibration?: DomainParameterCalibration;
+  /** Optional URL path to snarkjs WASM circuit file. */
+  readonly wasmPath?: string;
+  /** Optional URL path to Groth16 zkey proving key file. */
+  readonly zkeyPath?: string;
+}
+
+/**
+ * Result payload produced upon completing a PoHI browser session evaluation.
+ */
+export interface PoHISessionResult {
+  /** Mathematical score evaluation produced by @pohi-protocol/core-math. */
+  readonly scoreResult: PoHIScoreResult;
+  /** Optional Groth16 proof payload (populated if isValid === true and prover is configured). */
+  readonly proofPayload?: PoHIProofPayload;
+  /** Total raw telemetry events recorded during the session. */
+  readonly rawEventCount: number;
+}
+
+/**
+ * Public interface for managing a browser telemetry capture session.
+ */
+export interface PoHISession {
+  /** Attaches native event listeners to target HTML input element. */
+  attach(element: HTMLElement): void;
+  /** Detaches event listeners without clearing collected telemetry. */
+  detach(): void;
+  /** Evaluates session score and generates ZK proof if valid. */
+  processSession(): Promise<PoHISessionResult>;
+  /** Detaches listeners, zero-overwrites volatile memory, and terminates background WebWorkers. */
+  destroy(): void;
+}
+
+/**
+ * Factory function for instantiating a new PoHISession.
+ */
+export function createPoHISession(config: PoHISDKConfig): PoHISession;
+```
+
+### 6.2 Browser Event Registration & Timestamp Semantics
+
+1. **Event Types Captured**:
+   - `keydown`: Captures key actuation press timestamp $t_{press,i}$.
+   - `keyup`: Captures key release timestamp $t_{release,i}$.
+   - `touchstart` / `touchend`: Captures capacitive screen contact start/end timestamps on mobile browsers.
+2. **Event Filtering Rules**:
+   - Ignores synthetic key events (`event.isComposing === true`).
+   - Ignores OS key auto-repeat events (`event.repeat === true`).
+   - Filters out non-character modifier keys (`Shift`, `Control`, `Alt`, `Meta`, `CapsLock`), which carry no biomechanical signal. `Backspace` is *not* a modifier and is always captured: it is the trigger for the Equation 3.5 correction index set.
+3. **Timestamp Precision & Monotonic Conversion**:
+   - Timestamps are acquired via `performance.now()` providing sub-millisecond precision.
+   - Absolute epoch millisecond conversion: $t = \text{performance.timeOrigin} + \text{performance.now()}$.
+
+### 6.3 Volatile Memory Management & Zero-Overwrite Sanitization
+
+1. **Typed Array Buffer Isolation**:
+   - Raw event timestamps are written directly to pre-allocated `Float64Array` typed memory buffers.
+   - Buffers reside exclusively in volatile client browser heap RAM.
+2. **Zero-Overwrite Sanitization Protocol**:
+   - Immediately following metric calculation and ZK witness compilation, the SDK executes `.fill(0)` across all allocated `Float64Array` memory buffers:
+     ```typescript
+     pressTimesBuffer.fill(0);
+     releaseTimesBuffer.fill(0);
+     ```
+   - This process guarantees that raw telemetry cannot be extracted by subsequent browser scripts or side-channel inspection.
+
+### 6.4 WebWorker Architecture & `snarkjs` WASM Prover RPC Protocol
+
+1. **Worker Threading Model**:
+   - Groth16 proof generation runs inside a dedicated WebWorker thread to preserve main UI thread responsiveness ($60\text{ fps}$).
+2. **RPC Message Protocol**:
+   - **Worker Request Message**:
+     ```typescript
+     export interface WorkerProverRequest {
+       readonly type: 'GENERATE_PROOF';
+       readonly wasmPath: string;
+       readonly zkeyPath: string;
+       readonly witness: PoHIPrivateWitness;
+       readonly publicSignals: PoHIPublicSignals;
+     }
+     ```
+   - **Worker Response Message**:
+     ```typescript
+     export interface WorkerProverResponse {
+       readonly type: 'PROOF_SUCCESS' | 'PROOF_ERROR';
+       readonly proof?: Groth16Proof;
+       readonly publicSignals?: PoHIPublicSignals;
+       readonly error?: string;
+     }
+     ```
+3. **`snarkjs` Integration**:
+   - The worker loads `snarkjs.groth16.fullProve(witness, wasmPath, zkeyPath)`.
+   - Returns succinct 128-byte proof payload $Z_p$ back to the main thread over `postMessage`.
+
+### 6.5 Interaction with `@pohi-protocol/core-math`
+
+- Telemetry vectors extracted from typed buffers are passed directly to reference mathematical functions:
+  - `computeDwellTimeVector(events)` [Eq 3.1]
+  - `computeFlightTimeVector(events)` [Eq 3.1]
+  - `computeFisherPearsonSkewness(flightTimes)` [Eq 3.2]
+  - `computeExpectedCognitiveLatency(contextLength)` [Eq 3.3]
+  - `computeCognitiveAssimilationRatio(tauReal, contextLength)` [Eq 3.4]
+  - `computeErrorRecalibrationVariance(flightTimes, backspaceIndices)` [Eq 3.5]
+  - `computeSigmoidalNormalizedComponents(metrics)` [Eq 3.6]
+  - `computePoHIScore(metrics, calibration)` [Eq 3.7]
+
+### 6.6 Resource Cleanup & Error Handling
+
+- Calling `destroy()` on a `PoHISession`:
+  1. Detaches all event listeners from the target `HTMLElement`.
+  2. Executes zero-overwrite `.fill(0)` memory sanitization across typed arrays.
+  3. Invokes `Worker.terminate()` on background ZK prover workers.
+  4. Nullifies internal buffer references to trigger garbage collection.
+

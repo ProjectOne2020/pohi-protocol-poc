@@ -95,11 +95,32 @@ sequenceDiagram
 - `context_length`: Character length $L_{in}$ of prompt context.
 - `session_hash`: Commitment $H(\text{Session\_ID} \parallel \text{User\_Address})$.
 - `timestamp`: Epoch completion timestamp.
+- `alpha`, `beta`, `gamma`: Domain calibration weights $\times 10^6$ (Equation 3.7).
+
+> [!IMPORTANT]
+> The calibration weights are **public inputs**, not private witness. They express the
+> verifier's security policy. If the prover could choose them, any session could be made to
+> satisfy any threshold by inflating the weight of whichever component scored highest, which
+> would void both the Equation 3.7 threshold semantics and the Chapter 9 economic argument.
+> The circuit additionally enforces the simplex constraint $\alpha + \beta + \gamma = 1$.
 
 ### 3.2 Private Witness ($w_{private}$)
 - `flight_times[N-1]`: Inter-key flight latencies in milliseconds.
 - `dwell_times[N]`: Key actuation dwell times in milliseconds.
 - `tau_real`: Measured cognitive assimilation latency.
+- `backspace_selector[N-1]`: Boolean membership mask encoding the index set $\mathcal{I}_{back}$
+  of Equation 3.5. A mask is the R1CS encoding of set membership: entry $i$ is $1$ when flight
+  time $f_i$ is adjacent to a `Backspace` deletion event.
+
+### 3.3 Witness Domain Constraints
+The circuit range-checks every telemetry input. Values outside these bounds are unprovable:
+
+| Signal | Bound | Rationale |
+| :--- | :--- | :--- |
+| `flight_times[i]`, `dwell_times[i]`, `tau_real` | $< 2^{20}$ ms (~17.5 min) | Prevents finite-field wrap-around in the third-moment accumulator of Equation 3.2 |
+| `context_length` | $< 2^{32}$ characters | Bounds $\tau_{expected}$ in Equation 3.3 |
+| `backspace_selector[i]` | $\in \{0, 1\}$ | Set-membership encoding must be boolean |
+| `alpha`, `beta`, `gamma` | $\ge 0$ and summing to $10^6$ | Equation 3.7 simplex constraint |
 
 ---
 

@@ -35,12 +35,13 @@ flowchart TD
 | Component / Subsystem | Package / Path | Target Environment | Implementation Status |
 | :--- | :--- | :--- | :--- |
 | **Research Whitepaper v5.0** | Root Documentation | Markdown / LaTeX | **Completed** |
-| **Mathematical Engine** | `@pohi-protocol/sdk-web` | WASM / JS Engine | **Active Development** |
-| **Circom R1CS Circuits** | `circuits/pohi_main.circom` | Circom / Groth16 (BN254) | **Active Development** |
-| **TypeScript Client SDK** | `@pohi-protocol/sdk-web` | Browser / Web Workers | **Active Development** |
+| **Mathematical Engine** | `@pohi-protocol/core-math` | TypeScript / ESM | **Implemented** (Eq 3.1–3.7, 74 unit tests passing) |
+| **Circom R1CS Circuits** | `circuits/pohi_main.circom` | Circom 2.2.3 / Groth16 (BN254) | **Implemented** (11,170 constraints; 15 fidelity and soundness tests passing) |
+| **TypeScript Client SDK** | `@pohi-protocol/sdk-web` | Browser / Web Workers | **Active Development** (4 tests passing; DOM capture path untested) |
 | **Mobile Native SDK** | `@pohi-protocol/sdk-mobile` | iOS (Swift) / Android (Kotlin) | **Reserved for future implementation** |
-| **EVM Escrow Smart Contract** | `@pohi-protocol/contracts` | Solidity 0.8.20 (Precompile 0x08) | **Active Development** |
-| **Stateless ZK-Oracle API** | OpenAPI 3.0 REST Schema | Node.js / Rust Backend | **Active Development** |
+| **EVM Escrow Smart Contract** | `@pohi-protocol/contracts` | Solidity 0.8.20 (Precompile 0x08) | **Specified only** — no source file exists in the repository |
+| **Stateless ZK-Oracle API** | OpenAPI 3.0 REST Schema | Node.js / Rust Backend | **Specified only** — no source file exists in the repository |
+| **Production Trusted Setup** | Multi-party ceremony | Groth16 phase 2 | **Not started** — the committed build uses development entropy |
 | **Empirical Cohort Study** | Benchmark Dataset | $N \ge 10,000$ Real Typists | **Planned / Empirical Validation Required** |
 | **Multimodal Sensor Fusion** | Mobile Telemetry Engine | Accelerometer / Gyroscope | **Reserved for future research** |
 | **Hardware Enclave Signing** | TEE Module | ARM TrustZone / Secure Enclave | **Reserved for future research** |
