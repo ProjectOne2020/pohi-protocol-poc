@@ -42,178 +42,122 @@
   label { display: block; margin: .4rem 0; }
   #status { font-size: .9rem; min-height: 1.4rem; }
   .ok { color: #16a34a; } .warn { color: #d97706; }
+  #langToggle { text-align: right; margin-bottom: .5rem; }
+  .lang-btn {
+    padding: .3rem .7rem; font-size: .8rem; border-radius: .4rem;
+    border: 1px solid rgba(128,128,128,.5); background: transparent; color: inherit;
+    cursor: pointer; opacity: .55;
+  }
+  .lang-btn.active { opacity: 1; background: rgba(128,128,128,.18); font-weight: 600; }
 </style>
 </head>
 <body>
 
-<h1>Estudio de dinámica de tecleo</h1>
-<p class="sub">Protocolo Proof of Human Intent (PoHI) — recolección de datos para investigación</p>
+<div id="langToggle">
+  <button type="button" class="lang-btn" id="langEs">Español</button>
+  <button type="button" class="lang-btn" id="langEn">English</button>
+</div>
 
-<!-- ─────────────────────────── CONSENTIMIENTO ─────────────────────────── -->
+<h1 id="mainTitle"></h1>
+<p class="sub" id="mainSub"></p>
+
+<!-- ─────────────────────────── CONSENTIMIENTO / CONSENT ─────────────────────────── -->
 <section id="consent">
   <div class="card">
-    <h2 style="margin-top:0">De qué va esto</h2>
-    <p>
-      La inteligencia artificial ya escribe textos que no se distinguen de los que escribe una
-      persona. Eso significa que <strong>leer un mensaje ya no sirve para saber si lo escribió
-      un humano o un programa</strong>, y de ahí vienen buena parte de las estafas
-      automatizadas, las cuentas falsas y el spam que hoy inunda internet.
-    </p>
-    <p>
-      Esta investigación propone mirar a otro sitio: no <em>qué</em> se escribe, sino
-      <strong>cómo</strong> se escribe. Una persona teclea con un ritmo irregular — se detiene a
-      pensar, se equivoca y corrige, tiene un pulso que no es perfectamente regular. Un programa
-      no tiene dedos, ni músculos que se cansen, ni que releer la pregunta. La idea es medir esa
-      fricción física, que es difícil de imitar, en lugar del texto, que ya no lo es.
-    </p>
-    <p>
-      La segunda mitad de la idea es la privacidad: todo el cálculo ocurre en tu propio
-      dispositivo, y lo único que saldría de él sería una prueba criptográfica de que el
-      resultado es correcto — nunca tus datos. A eso se le llama <em>prueba de conocimiento
-      cero</em>, y es lo que permite demostrar algo sin revelar nada.
-    </p>
+    <h2 style="margin-top:0" id="aboutH2"></h2>
+    <p id="aboutP1"></p>
+    <p id="aboutP2"></p>
+    <p id="aboutP3"></p>
 
-    <h2>Para qué necesito tu ayuda</h2>
-    <p>
-      Ahora mismo todo esto es una <strong>hipótesis sin comprobar</strong>. Está la teoría, están
-      las matemáticas y está el software funcionando, pero falta lo más importante: los datos.
-    </p>
-    <p>
-      Necesito saber cómo teclean personas reales para poder responder la pregunta que de verdad
-      importa, y que voy a intentar responder <em>en mi contra</em>: <strong>¿puede un programa
-      barato imitar el ritmo humano y colarse?</strong> Para averiguarlo necesito dos cosas —
-      tecleo humano auténtico (el tuyo) y tecleo falso generado por mí — y comparar cuántas veces
-      el sistema se equivoca.
-    </p>
-    <p>
-      Si el resultado es que se cuela, lo publicaré igual. Un método que nadie ha intentado
-      romper no vale nada, y prefiero encontrar el fallo yo antes de que lo encuentre otro.
-      Por eso tus seis textos son valiosos: sin ellos no hay experimento.
-    </p>
-    <p class="muted">
-      Te llevará unos cinco minutos. No hay respuestas correctas ni incorrectas, y nadie va a
-      leer lo que escribas — literalmente no se guarda.
-    </p>
+    <h2 id="whyH2"></h2>
+    <p id="whyP1"></p>
+    <p id="whyP2"></p>
+    <p id="whyP3"></p>
+    <p class="muted" id="whyMuted"></p>
 
-    <h2>Quién está detrás</h2>
-    <p>
-      Me llamo <strong>Alejandro Gutiérrez</strong> y soy el autor de esta investigación. La hago
-      por mi cuenta, no hay ninguna empresa detrás, y todo el trabajo es público y auditable.
-    </p>
+    <h2 id="whoH2"></h2>
+    <p id="whoP1"></p>
     <ul>
-      <li>Escríbeme si tienes cualquier duda:
-        <a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a></li>
-      <li><a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/"
-             target="_blank" rel="noopener noreferrer">Mi perfil de LinkedIn</a></li>
-      <li>Código y documentación completos:
-        <a href="https://github.com/ProjectOne2020/pohi-protocol-poc"
-           target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a></li>
+      <li id="whoLiEmail"></li>
+      <li id="whoLiLinkedin"></li>
+      <li id="whoLiRepo"></li>
     </ul>
-    <p class="muted">
-      En ese repositorio está exactamente esta página, la base de datos donde acaban los datos y
-      las reglas que impiden guardar tu texto. Puedes comprobar por ti mismo que lo que dice
-      aquí abajo es cierto, sin tener que fiarte de mi palabra.
-    </p>
+    <p class="muted" id="whoMuted"></p>
 
     <hr style="border:none;border-top:1px solid rgba(128,128,128,.3);margin:1.75rem 0">
 
-    <h2 style="margin-top:0">Qué se recoge y qué no</h2>
-    <p>Este estudio mide <strong>el ritmo con el que escribes</strong>, no lo que escribes.</p>
+    <h2 style="margin-top:0" id="whatH2"></h2>
+    <p id="whatP1"></p>
     <ul>
-      <li class="yes"><strong>Sí se guarda:</strong> el instante en que pulsas cada tecla y el instante en que la sueltas, en milisegundos.</li>
-      <li class="yes"><strong>Sí se guarda:</strong> si la tecla fue <code>Retroceso</code> (borrar) o no.</li>
-      <li class="yes"><strong>Sí se guarda:</strong> el tipo de teclado que usas (portátil, móvil…), que tú eliges.</li>
-      <li class="no"><strong>No se guarda:</strong> qué letras pulsaste. El texto que escribas <em>no</em> sale de tu navegador.</li>
-      <li class="no"><strong>No se guarda:</strong> tu nombre, tu correo, tu dirección IP ni ningún identificador personal.</li>
+      <li class="yes" id="whatLiYes1"></li>
+      <li class="yes" id="whatLiYes2"></li>
+      <li class="yes" id="whatLiYes3"></li>
+      <li class="no" id="whatLiNo1"></li>
+      <li class="no" id="whatLiNo2"></li>
     </ul>
-    <p>
-      Como sólo se conservan tiempos y una marca de borrado, el texto original
-      <strong>no puede reconstruirse</strong> a partir de estos datos. La base de datos rechaza
-      automáticamente cualquier registro que contenga letras, aunque alguien modificara esta página.
-    </p>
+    <p id="whatP2"></p>
 
-    <h2 id="sendingHeading">Cómo se envían los datos</h2>
-    <p id="sendingText">
-      Al terminar cada texto, los tiempos se envían automáticamente por internet a una base de
-      datos de investigación, para que no tengas que hacer nada más. La conexión va cifrada.
-      Se te asigna un código aleatorio para saber que varios textos vienen de la misma persona,
-      pero ese código <strong>no está ligado a tu identidad</strong> de ninguna forma.
-    </p>
-    <p class="muted">
-      La clave que usa esta página sólo permite <em>añadir</em> registros, nunca leerlos. Ni tú ni
-      nadie que abra esta página puede ver lo que han enviado otras personas.
-    </p>
+    <h2 id="sendingHeading"></h2>
+    <p id="sendingText"></p>
+    <p class="muted" id="sendingMuted"></p>
 
-    <h2>Participación</h2>
-    <p>
-      Es voluntaria y anónima. Puedes cerrar la página cuando quieras. Como no se guarda ningún
-      dato que te identifique, no es posible localizar ni borrar tus envíos después, así que
-      conviene que decidas antes de empezar. Los datos se usarán únicamente para evaluar
-      científicamente el protocolo PoHI y podrán publicarse de forma agregada.
-    </p>
+    <h2 id="participationH2"></h2>
+    <p id="participationP"></p>
 
-    <h2>Tu dispositivo</h2>
-    <label><input type="radio" name="device" value="desktop-mechanical"> Teclado de sobremesa (mecánico o externo)</label>
-    <label><input type="radio" name="device" value="laptop-scissor"> Teclado de portátil</label>
-    <label><input type="radio" name="device" value="ios-capacitive"> Pantalla táctil iPhone / iPad</label>
-    <label><input type="radio" name="device" value="android-capacitive"> Pantalla táctil Android</label>
-    <label><input type="radio" name="device" value="unknown"> Otro / prefiero no decirlo</label>
+    <h2 id="deviceH2"></h2>
+    <label><input type="radio" name="device" value="desktop-mechanical"> <span id="deviceDesktopLabel"></span></label>
+    <label><input type="radio" name="device" value="laptop-scissor"> <span id="deviceLaptopLabel"></span></label>
+    <label><input type="radio" name="device" value="ios-capacitive"> <span id="deviceIosLabel"></span></label>
+    <label><input type="radio" name="device" value="android-capacitive"> <span id="deviceAndroidLabel"></span></label>
+    <label><input type="radio" name="device" value="unknown"> <span id="deviceOtherLabel"></span></label>
 
     <p style="margin-top:1.5rem">
-      <button class="primary" id="startBtn" disabled>He leído lo anterior y acepto participar</button>
+      <button class="primary" id="startBtn" disabled></button>
     </p>
   </div>
 </section>
 
-<!-- ─────────────────────────── TAREA ─────────────────────────── -->
+<!-- ─────────────────────────── TAREA / TASK ─────────────────────────── -->
 <section id="task" class="hidden">
   <p class="muted" id="progress"></p>
   <div class="card">
     <div class="prompt" id="promptText"></div>
-    <textarea id="input" placeholder="Escribe aquí tu respuesta…" autocomplete="off"
+    <textarea id="input" autocomplete="off"
               autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
     <p style="margin-bottom:.5rem">
-      <button class="primary" id="nextBtn" disabled>Siguiente</button>
-      <span class="muted" id="hint"> — escribe al menos 60 caracteres</span>
+      <button class="primary" id="nextBtn" disabled></button>
+      <span class="muted" id="hint"></span>
     </p>
     <p id="status"></p>
   </div>
 </section>
 
-<!-- ─────────────────────────── FIN ─────────────────────────── -->
+<!-- ─────────────────────────── FIN / DONE ─────────────────────────── -->
 <section id="done" class="hidden">
   <div class="card">
-    <h2>Listo. Muchas gracias.</h2>
+    <h2 id="doneH2"></h2>
     <p id="summary"></p>
     <p id="pendingBox" class="hidden warn">
-      Algunos envíos no salieron (puede ser la conexión).
-      <button id="retryBtn">Reintentar envío</button>
-      o
-      <button id="downloadBtn">descargar y enviármelo</button>.
+      <span id="pendingIntro"></span>
+      <button id="retryBtn"></button>
+      <span id="orWord"></span>
+      <button id="downloadBtn"></button><span>.</span>
     </p>
     <p class="muted">
-      Si quieres comprobar qué se envió, puedes
-      <button id="inspectBtn">ver los datos</button>. Verás sólo números.
+      <span id="inspectIntro"></span>
+      <button id="inspectBtn"></button><span id="inspectSuffix"></span>
     </p>
     <pre id="inspect" class="hidden" style="overflow:auto;max-height:16rem;font-size:.75rem"></pre>
 
     <hr style="border:none;border-top:1px solid rgba(128,128,128,.3);margin:1.5rem 0">
 
-    <p>
-      Acabas de contribuir a comprobar si esta idea funciona de verdad. Si te interesa, el
-      resultado del experimento —salga como salga— se publicará aquí:
-    </p>
+    <p id="followIntro"></p>
     <ul>
-      <li><a href="https://github.com/ProjectOne2020/pohi-protocol-poc"
-             target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a></li>
-      <li><a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/"
-             target="_blank" rel="noopener noreferrer">Alejandro Gutiérrez en LinkedIn</a></li>
-      <li><a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a></li>
+      <li id="followLiRepo"></li>
+      <li id="followLiLinkedin"></li>
+      <li id="followLiEmail"></li>
     </ul>
-    <p class="muted">
-      Y si conoces a alguien que pueda dedicarle cinco minutos, compartir el enlace ayuda más
-      que nada: cuantas más personas distintas, más sólido es el resultado.
-    </p>
+    <p class="muted" id="shareMuted"></p>
   </div>
 </section>
 
@@ -231,19 +175,347 @@
 
   var ENDPOINT = SUPABASE_URL ? SUPABASE_URL + '/rest/v1/keystroke_sessions' : null;
 
-  // Textos de longitud variada, de modo que context_length (L_in) de la Ec. 3.3 varíe.
-  var PROMPTS = [
-    'Cuéntame qué hiciste el fin de semana pasado.',
-    'Describe con tus palabras el último sitio al que viajaste, o al que te gustaría viajar. Explica por qué te llamó la atención y qué es lo que más recuerdas de ese lugar.',
-    '¿Qué comida te gusta más y cómo se prepara?',
-    'Imagina que tienes que explicarle a alguien que nunca ha usado un ordenador cómo se envía un correo electrónico. Escribe esa explicación paso a paso, con el detalle que te parezca necesario para que se entienda bien.',
-    'Escribe sobre una película o serie que hayas visto hace poco.',
-    'Piensa en algo que hayas aprendido en el último año, dentro o fuera del trabajo, y explica cómo lo aprendiste y para qué te ha servido desde entonces.'
-  ];
-
   var MIN_CHARS = 60;
   var QUEUE_KEY = 'pohi.pendingSessions';
   var TOKEN_KEY = 'pohi.participantToken';
+  var LANG_KEY  = 'pohi.lang';
+
+  // ─────────────────────────────────────────────────────────────────────
+  // TRADUCCIONES / TRANSLATIONS
+  // ─────────────────────────────────────────────────────────────────────
+  var STRINGS = {
+    es: {
+      pageTitle: 'Estudio de dinámica de tecleo — PoHI',
+      mainTitle: 'Estudio de dinámica de tecleo',
+      mainSub: 'Protocolo Proof of Human Intent (PoHI) — recolección de datos para investigación',
+
+      aboutH2: 'De qué va esto',
+      aboutP1:
+        'La inteligencia artificial ya escribe textos que no se distinguen de los que escribe una ' +
+        'persona. Eso significa que <strong>leer un mensaje ya no sirve para saber si lo escribió ' +
+        'un humano o un programa</strong>, y de ahí vienen buena parte de las estafas ' +
+        'automatizadas, las cuentas falsas y el spam que hoy inunda internet.',
+      aboutP2:
+        'Esta investigación propone mirar a otro sitio: no <em>qué</em> se escribe, sino ' +
+        '<strong>cómo</strong> se escribe. Una persona teclea con un ritmo irregular — se detiene a ' +
+        'pensar, se equivoca y corrige, tiene un pulso que no es perfectamente regular. Un programa ' +
+        'no tiene dedos, ni músculos que se cansen, ni que releer la pregunta. La idea es medir esa ' +
+        'fricción física, que es difícil de imitar, en lugar del texto, que ya no lo es.',
+      aboutP3:
+        'La segunda mitad de la idea es la privacidad: todo el cálculo ocurre en tu propio ' +
+        'dispositivo, y lo único que saldría de él sería una prueba criptográfica de que el ' +
+        'resultado es correcto — nunca tus datos. A eso se le llama <em>prueba de conocimiento ' +
+        'cero</em>, y es lo que permite demostrar algo sin revelar nada.',
+
+      whyH2: 'Para qué necesito tu ayuda',
+      whyP1:
+        'Ahora mismo todo esto es una <strong>hipótesis sin comprobar</strong>. Está la teoría, están ' +
+        'las matemáticas y está el software funcionando, pero falta lo más importante: los datos.',
+      whyP2:
+        'Necesito saber cómo teclean personas reales para poder responder la pregunta que de verdad ' +
+        'importa, y que voy a intentar responder <em>en mi contra</em>: <strong>¿puede un programa ' +
+        'barato imitar el ritmo humano y colarse?</strong> Para averiguarlo necesito dos cosas — ' +
+        'tecleo humano auténtico (el tuyo) y tecleo falso generado por mí — y comparar cuántas veces ' +
+        'el sistema se equivoca.',
+      whyP3:
+        'Si el resultado es que se cuela, lo publicaré igual. Un método que nadie ha intentado ' +
+        'romper no vale nada, y prefiero encontrar el fallo yo antes de que lo encuentre otro. ' +
+        'Por eso tus seis textos son valiosos: sin ellos no hay experimento.',
+      whyMuted:
+        'Te llevará unos cinco minutos. No hay respuestas correctas ni incorrectas, y nadie va a ' +
+        'leer lo que escribas — literalmente no se guarda.',
+
+      whoH2: 'Quién está detrás',
+      whoP1:
+        'Me llamo <strong>Alejandro Gutiérrez</strong> y soy el autor de esta investigación. La hago ' +
+        'por mi cuenta, no hay ninguna empresa detrás, y todo el trabajo es público y auditable.',
+      whoLiEmail:
+        'Escríbeme si tienes cualquier duda: ' +
+        '<a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a>',
+      whoLiLinkedin:
+        '<a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/" ' +
+        'target="_blank" rel="noopener noreferrer">Mi perfil de LinkedIn</a>',
+      whoLiRepo:
+        'Código y documentación completos: ' +
+        '<a href="https://github.com/ProjectOne2020/pohi-protocol-poc" ' +
+        'target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a>',
+      whoMuted:
+        'En ese repositorio está exactamente esta página, la base de datos donde acaban los datos y ' +
+        'las reglas que impiden guardar tu texto. Puedes comprobar por ti mismo que lo que dice ' +
+        'aquí abajo es cierto, sin tener que fiarte de mi palabra.',
+
+      whatH2: 'Qué se recoge y qué no',
+      whatP1: 'Este estudio mide <strong>el ritmo con el que escribes</strong>, no lo que escribes.',
+      whatLiYes1: '<strong>Sí se guarda:</strong> el instante en que pulsas cada tecla y el instante en que la sueltas, en milisegundos.',
+      whatLiYes2: '<strong>Sí se guarda:</strong> si la tecla fue <code>Retroceso</code> (borrar) o no.',
+      whatLiYes3: '<strong>Sí se guarda:</strong> el tipo de teclado que usas (portátil, móvil…), que tú eliges.',
+      whatLiNo1: '<strong>No se guarda:</strong> qué letras pulsaste. El texto que escribas <em>no</em> sale de tu navegador.',
+      whatLiNo2: '<strong>No se guarda:</strong> tu nombre, tu correo, tu dirección IP ni ningún identificador personal.',
+      whatP2:
+        'Como sólo se conservan tiempos y una marca de borrado, el texto original ' +
+        '<strong>no puede reconstruirse</strong> a partir de estos datos. La base de datos rechaza ' +
+        'automáticamente cualquier registro que contenga letras, aunque alguien modificara esta página.',
+
+      sendingHeading: 'Cómo se envían los datos',
+      sendingText:
+        'Al terminar cada texto, los tiempos se envían automáticamente por internet a una base de ' +
+        'datos de investigación, para que no tengas que hacer nada más. La conexión va cifrada. ' +
+        'Se te asigna un código aleatorio para saber que varios textos vienen de la misma persona, ' +
+        'pero ese código <strong>no está ligado a tu identidad</strong> de ninguna forma.',
+      sendingHeadingOffline: 'Cómo se entregan los datos',
+      sendingTextOffline:
+        'Esta copia no envía nada por internet. Al terminar descargarás un archivo y decides ' +
+        'tú si lo compartes.',
+      sendingMuted:
+        'La clave que usa esta página sólo permite <em>añadir</em> registros, nunca leerlos. Ni tú ni ' +
+        'nadie que abra esta página puede ver lo que han enviado otras personas.',
+
+      participationH2: 'Participación',
+      participationP:
+        'Es voluntaria y anónima. Puedes cerrar la página cuando quieras. Como no se guarda ningún ' +
+        'dato que te identifique, no es posible localizar ni borrar tus envíos después, así que ' +
+        'conviene que decidas antes de empezar. Los datos se usarán únicamente para evaluar ' +
+        'científicamente el protocolo PoHI y podrán publicarse de forma agregada.',
+
+      deviceH2: 'Tu dispositivo',
+      deviceDesktopLabel: 'Teclado de sobremesa (mecánico o externo)',
+      deviceLaptopLabel: 'Teclado de portátil',
+      deviceIosLabel: 'Pantalla táctil iPhone / iPad',
+      deviceAndroidLabel: 'Pantalla táctil Android',
+      deviceOtherLabel: 'Otro / prefiero no decirlo',
+
+      startBtn: 'He leído lo anterior y acepto participar',
+
+      placeholder: 'Escribe aquí tu respuesta…',
+      nextBtn: 'Siguiente',
+      progress: function (i, n) { return 'Texto ' + i + ' de ' + n; },
+      hintMin: function (n) { return ' — escribe al menos ' + n + ' caracteres'; },
+      hintNoEvents:
+        ' — no detectamos pulsaciones de tecla. Si usas predicción de texto, autocompletar ' +
+        'o dictado por voz, prueba escribiendo algunas letras manualmente.',
+      sendingStatus: 'Enviando…',
+      sentStatus: 'Enviado ✓',
+      offlineStatus: 'Sin conexión: se enviará automáticamente más tarde.',
+
+      doneH2: 'Listo. Muchas gracias.',
+      summaryOnline: function (sentCount, total, eventCount) {
+        return 'Se enviaron ' + sentCount + ' de ' + total + ' textos (' + eventCount +
+          ' pulsaciones en total). Ni una sola letra fue guardada.';
+      },
+      summaryOffline: function (total, eventCount) {
+        return 'Se registraron ' + total + ' textos y ' + eventCount +
+          ' pulsaciones. Ni una sola letra fue guardada.';
+      },
+      summaryAfterRetry: function (sentCount, total) {
+        return 'Se enviaron ' + sentCount + ' de ' + total + ' textos.';
+      },
+      pendingIntro: 'Algunos envíos no salieron (puede ser la conexión).',
+      retryBtn: 'Reintentar envío',
+      orWord: 'o',
+      downloadBtn: 'descargar y enviármelo',
+      inspectIntro: 'Si quieres comprobar qué se envió, puedes',
+      inspectBtn: 'ver los datos',
+      inspectSuffix: '. Verás sólo números.',
+      followIntro:
+        'Acabas de contribuir a comprobar si esta idea funciona de verdad. Si te interesa, el ' +
+        'resultado del experimento —salga como salga— se publicará aquí:',
+      followLiRepo:
+        '<a href="https://github.com/ProjectOne2020/pohi-protocol-poc" ' +
+        'target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a>',
+      followLiLinkedin:
+        '<a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/" ' +
+        'target="_blank" rel="noopener noreferrer">Alejandro Gutiérrez en LinkedIn</a>',
+      followLiEmail:
+        '<a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a>',
+      shareMuted:
+        'Y si conoces a alguien que pueda dedicarle cinco minutos, compartir el enlace ayuda más ' +
+        'que nada: cuantas más personas distintas, más sólido es el resultado.',
+
+      corpusNotes: 'Recogido con consentimiento informado. Sin identidades de tecla.',
+      downloadPrefix: 'pohi-tecleo-',
+
+      prompts: [
+        'Cuéntame qué hiciste el fin de semana pasado.',
+        'Describe con tus palabras el último sitio al que viajaste, o al que te gustaría viajar. Explica por qué te llamó la atención y qué es lo que más recuerdas de ese lugar.',
+        '¿Qué comida te gusta más y cómo se prepara?',
+        'Imagina que tienes que explicarle a alguien que nunca ha usado un ordenador cómo se envía un correo electrónico. Escribe esa explicación paso a paso, con el detalle que te parezca necesario para que se entienda bien.',
+        'Escribe sobre una película o serie que hayas visto hace poco.',
+        'Piensa en algo que hayas aprendido en el último año, dentro o fuera del trabajo, y explica cómo lo aprendiste y para qué te ha servido desde entonces.'
+      ]
+    },
+
+    en: {
+      pageTitle: 'PoHI — Typing Dynamics Study',
+      mainTitle: 'Typing Dynamics Study',
+      mainSub: 'Proof of Human Intent (PoHI) Protocol — research data collection',
+
+      aboutH2: 'What this is about',
+      aboutP1:
+        'Artificial intelligence can already write text that is indistinguishable from what a ' +
+        'person writes. That means <strong>reading a message no longer tells you whether a human ' +
+        'or a program wrote it</strong>, and that is where a large share of automated scams, fake ' +
+        'accounts, and the spam flooding the internet today comes from.',
+      aboutP2:
+        'This research looks somewhere else: not <em>what</em> is written, but <strong>how</strong> ' +
+        'it is written. A person types with an irregular rhythm — they pause to think, make ' +
+        'mistakes and correct them, have a pulse that is never perfectly steady. A program has no ' +
+        'fingers, no muscles that get tired, nothing to re-read. The idea is to measure that ' +
+        'physical friction, which is hard to fake, instead of the text, which no longer is.',
+      aboutP3:
+        'The second half of the idea is privacy: all the computation happens on your own device, ' +
+        'and the only thing that would ever leave it is a cryptographic proof that the result is ' +
+        'correct — never your data. That is called a <em>zero-knowledge proof</em>, and it is what ' +
+        'lets you demonstrate something without revealing anything.',
+
+      whyH2: 'Why I need your help',
+      whyP1:
+        'Right now this is all an <strong>untested hypothesis</strong>. The theory is there, the ' +
+        'math is there, and the software works, but the most important part is missing: the data.',
+      whyP2:
+        'I need to know how real people type in order to answer the question that actually ' +
+        'matters, and that I am going to try to answer <em>against myself</em>: <strong>can a cheap ' +
+        'program imitate human rhythm and get through?</strong> To find out I need two things — ' +
+        'genuine human typing (yours) and fake typing generated by me — and to compare how often ' +
+        'the system gets it wrong.',
+      whyP3:
+        'If the result is that it gets through, I will publish that too. A method nobody has tried ' +
+        'to break is worth nothing, and I would rather find the flaw myself before someone else ' +
+        'does. That is why your six texts are valuable: without them there is no experiment.',
+      whyMuted:
+        'It will take about five minutes. There are no right or wrong answers, and nobody will ' +
+        'read what you write — it is literally never stored.',
+
+      whoH2: 'Who is behind this',
+      whoP1:
+        'My name is <strong>Alejandro Gutiérrez</strong> and I am the author of this research. I do ' +
+        'it on my own, there is no company behind it, and all of the work is public and auditable.',
+      whoLiEmail:
+        'Email me with any questions: ' +
+        '<a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a>',
+      whoLiLinkedin:
+        '<a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/" ' +
+        'target="_blank" rel="noopener noreferrer">My LinkedIn profile</a>',
+      whoLiRepo:
+        'Full code and documentation: ' +
+        '<a href="https://github.com/ProjectOne2020/pohi-protocol-poc" ' +
+        'target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a>',
+      whoMuted:
+        'That repository contains this exact page, the database where the data ends up, and the ' +
+        'rules that prevent your text from ever being stored. You can verify for yourself that ' +
+        'what is stated below is true, without having to take my word for it.',
+
+      whatH2: 'What is collected and what is not',
+      whatP1: 'This study measures <strong>the rhythm you type with</strong>, not what you type.',
+      whatLiYes1: '<strong>Collected:</strong> the instant you press each key and the instant you release it, in milliseconds.',
+      whatLiYes2: '<strong>Collected:</strong> whether the key was <code>Backspace</code> (delete) or not.',
+      whatLiYes3: '<strong>Collected:</strong> the kind of keyboard you use (laptop, mobile…), which you choose yourself.',
+      whatLiNo1: '<strong>Not collected:</strong> which letters you pressed. The text you type <em>never</em> leaves your browser.',
+      whatLiNo2: '<strong>Not collected:</strong> your name, email, IP address, or any personal identifier.',
+      whatP2:
+        'Since only timings and a deletion flag are kept, the original text ' +
+        '<strong>cannot be reconstructed</strong> from this data. The database automatically ' +
+        'rejects any record that contains letters, even if someone modified this page.',
+
+      sendingHeading: 'How the data is sent',
+      sendingText:
+        'When you finish each text, the timings are sent automatically over the internet to a ' +
+        'research database, so you do not have to do anything else. The connection is encrypted. ' +
+        'You are given a random code so several texts can be linked to the same person, but that ' +
+        'code <strong>is not tied to your identity</strong> in any way.',
+      sendingHeadingOffline: 'How the data is delivered',
+      sendingTextOffline:
+        'This copy does not send anything over the internet. When you finish, you will download a ' +
+        'file and decide yourself whether to share it.',
+      sendingMuted:
+        'The key this page uses can only <em>add</em> records, never read them. Neither you nor ' +
+        'anyone else who opens this page can see what other people have submitted.',
+
+      participationH2: 'Participation',
+      participationP:
+        'It is voluntary and anonymous. You can close the page whenever you like. Since no data ' +
+        'that identifies you is stored, it is not possible to locate or delete your submissions ' +
+        'afterwards, so it is best to decide before you start. The data will be used only to ' +
+        'scientifically evaluate the PoHI protocol, and may be published in aggregate form.',
+
+      deviceH2: 'Your device',
+      deviceDesktopLabel: 'Desktop keyboard (mechanical or external)',
+      deviceLaptopLabel: 'Laptop keyboard',
+      deviceIosLabel: 'iPhone / iPad touchscreen',
+      deviceAndroidLabel: 'Android touchscreen',
+      deviceOtherLabel: 'Other / prefer not to say',
+
+      startBtn: 'I have read the above and agree to participate',
+
+      placeholder: 'Type your answer here…',
+      nextBtn: 'Next',
+      progress: function (i, n) { return 'Text ' + i + ' of ' + n; },
+      hintMin: function (n) { return ' — write at least ' + n + ' characters'; },
+      hintNoEvents:
+        ' — we did not detect any keystrokes. If you are using predictive text, autocomplete, ' +
+        'or voice dictation, try typing a few letters manually.',
+      sendingStatus: 'Sending…',
+      sentStatus: 'Sent ✓',
+      offlineStatus: 'Offline: it will be sent automatically later.',
+
+      doneH2: 'All done. Thank you.',
+      summaryOnline: function (sentCount, total, eventCount) {
+        return 'Sent ' + sentCount + ' of ' + total + ' texts (' + eventCount +
+          ' keystrokes in total). Not a single letter was stored.';
+      },
+      summaryOffline: function (total, eventCount) {
+        return 'Recorded ' + total + ' texts and ' + eventCount +
+          ' keystrokes. Not a single letter was stored.';
+      },
+      summaryAfterRetry: function (sentCount, total) {
+        return 'Sent ' + sentCount + ' of ' + total + ' texts.';
+      },
+      pendingIntro: 'Some submissions did not go through (possibly a connection issue).',
+      retryBtn: 'Retry sending',
+      orWord: 'or',
+      downloadBtn: 'download it and send it to me',
+      inspectIntro: 'If you want to check what was sent, you can',
+      inspectBtn: 'view the data',
+      inspectSuffix: '. You will see only numbers.',
+      followIntro:
+        'You just helped test whether this idea actually works. If you are curious, the result of ' +
+        'the experiment — whichever way it goes — will be published here:',
+      followLiRepo:
+        '<a href="https://github.com/ProjectOne2020/pohi-protocol-poc" ' +
+        'target="_blank" rel="noopener noreferrer">github.com/ProjectOne2020/pohi-protocol-poc</a>',
+      followLiLinkedin:
+        '<a href="https://www.linkedin.com/in/alejandro-guti%C3%A9rrez-9a0318107/" ' +
+        'target="_blank" rel="noopener noreferrer">Alejandro Gutiérrez on LinkedIn</a>',
+      followLiEmail:
+        '<a href="mailto:alejandro.gutierrezb31@gmail.com">alejandro.gutierrezb31@gmail.com</a>',
+      shareMuted:
+        'And if you know someone who could spare five minutes, sharing the link helps more than ' +
+        'anything else: the more different people take part, the stronger the result.',
+
+      corpusNotes: 'Collected with informed consent. No key identities recorded.',
+      downloadPrefix: 'pohi-typing-',
+
+      prompts: [
+        'Tell me what you did last weekend.',
+        'Describe, in your own words, the last place you traveled to, or somewhere you would like to travel to. Explain what caught your attention about it and what you remember most about that place.',
+        'What is your favorite food, and how is it made?',
+        'Imagine you had to explain to someone who has never used a computer how to send an email. Write that explanation step by step, with as much detail as you think is needed for it to make sense.',
+        'Write about a movie or show you have watched recently.',
+        'Think of something you learned over the past year, whether at work or elsewhere, and explain how you learned it and how it has helped you since.'
+      ]
+    }
+  };
+
+  function detectInitialLang() {
+    try {
+      var saved = localStorage.getItem(LANG_KEY);
+      if (saved === 'es' || saved === 'en') return saved;
+    } catch (e) {}
+    var nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    return nav.indexOf('en') === 0 ? 'en' : 'es';
+  }
+
+  var currentLang = detectInitialLang();
+  var PROMPTS = STRINGS[currentLang].prompts;
 
   var deviceClass = null;
   var promptIndex = 0;
@@ -255,6 +527,8 @@
 
   var $ = function (id) { return document.getElementById(id); };
   function now() { return performance.timeOrigin + performance.now(); }
+
+  var input = $('input');
 
   function randomId(prefix) {
     if (crypto.randomUUID) return prefix + crypto.randomUUID();
@@ -282,7 +556,7 @@
   function enqueue(row) { var q = readQueue(); q.push(row); writeQueue(q); }
 
   function postRow(row) {
-    if (!ENDPOINT) return Promise.reject(new Error('sin endpoint'));
+    if (!ENDPOINT) return Promise.reject(new Error('no endpoint'));
     return fetch(ENDPOINT, {
       method: 'POST',
       headers: {
@@ -320,14 +594,98 @@
     el.className = cls || '';
   }
 
-  // ── Consentimiento ──
-  if (!ENDPOINT) {
-    $('sendingHeading').textContent = 'Cómo se entregan los datos';
-    $('sendingText').innerHTML =
-      'Esta copia no envía nada por internet. Al terminar descargarás un archivo y decides ' +
-      'tú si lo compartes.';
+  // ─────────────────────────────────────────────────────────────────────
+  // RENDERIZADO DE IDIOMA / LANGUAGE RENDERING
+  // ─────────────────────────────────────────────────────────────────────
+  function applyLanguage(lang) {
+    var t = STRINGS[lang];
+    currentLang = lang;
+    PROMPTS = t.prompts;
+
+    document.documentElement.lang = lang;
+    document.title = t.pageTitle;
+
+    $('langEs').classList.toggle('active', lang === 'es');
+    $('langEn').classList.toggle('active', lang === 'en');
+
+    $('mainTitle').textContent = t.mainTitle;
+    $('mainSub').textContent = t.mainSub;
+
+    $('aboutH2').textContent = t.aboutH2;
+    $('aboutP1').innerHTML = t.aboutP1;
+    $('aboutP2').innerHTML = t.aboutP2;
+    $('aboutP3').innerHTML = t.aboutP3;
+
+    $('whyH2').textContent = t.whyH2;
+    $('whyP1').innerHTML = t.whyP1;
+    $('whyP2').innerHTML = t.whyP2;
+    $('whyP3').innerHTML = t.whyP3;
+    $('whyMuted').innerHTML = t.whyMuted;
+
+    $('whoH2').textContent = t.whoH2;
+    $('whoP1').innerHTML = t.whoP1;
+    $('whoLiEmail').innerHTML = t.whoLiEmail;
+    $('whoLiLinkedin').innerHTML = t.whoLiLinkedin;
+    $('whoLiRepo').innerHTML = t.whoLiRepo;
+    $('whoMuted').innerHTML = t.whoMuted;
+
+    $('whatH2').textContent = t.whatH2;
+    $('whatP1').innerHTML = t.whatP1;
+    $('whatLiYes1').innerHTML = t.whatLiYes1;
+    $('whatLiYes2').innerHTML = t.whatLiYes2;
+    $('whatLiYes3').innerHTML = t.whatLiYes3;
+    $('whatLiNo1').innerHTML = t.whatLiNo1;
+    $('whatLiNo2').innerHTML = t.whatLiNo2;
+    $('whatP2').innerHTML = t.whatP2;
+
+    if (ENDPOINT) {
+      $('sendingHeading').textContent = t.sendingHeading;
+      $('sendingText').innerHTML = t.sendingText;
+    } else {
+      $('sendingHeading').textContent = t.sendingHeadingOffline;
+      $('sendingText').innerHTML = t.sendingTextOffline;
+    }
+    $('sendingMuted').innerHTML = t.sendingMuted;
+
+    $('participationH2').textContent = t.participationH2;
+    $('participationP').textContent = t.participationP;
+
+    $('deviceH2').textContent = t.deviceH2;
+    $('deviceDesktopLabel').textContent = t.deviceDesktopLabel;
+    $('deviceLaptopLabel').textContent = t.deviceLaptopLabel;
+    $('deviceIosLabel').textContent = t.deviceIosLabel;
+    $('deviceAndroidLabel').textContent = t.deviceAndroidLabel;
+    $('deviceOtherLabel').textContent = t.deviceOtherLabel;
+
+    $('startBtn').textContent = t.startBtn;
+
+    input.setAttribute('placeholder', t.placeholder);
+    $('nextBtn').textContent = t.nextBtn;
+
+    $('doneH2').textContent = t.doneH2;
+    $('pendingIntro').textContent = t.pendingIntro;
+    $('retryBtn').textContent = t.retryBtn;
+    $('orWord').textContent = t.orWord;
+    $('downloadBtn').textContent = t.downloadBtn;
+    $('inspectIntro').textContent = t.inspectIntro;
+    $('inspectBtn').textContent = t.inspectBtn;
+    $('inspectSuffix').textContent = t.inspectSuffix;
+    $('followIntro').textContent = t.followIntro;
+    $('followLiRepo').innerHTML = t.followLiRepo;
+    $('followLiLinkedin').innerHTML = t.followLiLinkedin;
+    $('followLiEmail').innerHTML = t.followLiEmail;
+    $('shareMuted').textContent = t.shareMuted;
   }
 
+  function setLang(lang) {
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+    applyLanguage(lang);
+  }
+
+  $('langEs').addEventListener('click', function () { setLang('es'); });
+  $('langEn').addEventListener('click', function () { setLang('en'); });
+
+  // ── Consentimiento ──
   Array.prototype.forEach.call(document.getElementsByName('device'), function (radio) {
     radio.addEventListener('change', function () {
       deviceClass = radio.value;
@@ -336,6 +694,7 @@
   });
 
   $('startBtn').addEventListener('click', function () {
+    $('langToggle').classList.add('hidden');
     $('consent').classList.add('hidden');
     $('task').classList.remove('hidden');
     flushQueue();
@@ -343,8 +702,6 @@
   });
 
   // ── Captura ──
-  var input = $('input');
-
   input.addEventListener('keydown', function (ev) {
     if (ev.isComposing || ev.repeat) return;
     var key = ev.key;
@@ -377,16 +734,15 @@
     // de la Ecuación 3.2) ocurre después, al exportar el corpus — no aquí. Exigir más
     // aquí bloqueaba a personas que usan predicción de texto, autocompletado, "swipe
     // typing" o dictado por voz: esos métodos cambian el texto sin disparar keydown/keyup.
+    var t = STRINGS[currentLang];
     var longEnough = input.value.length >= MIN_CHARS;
     var hasEvents = events.length >= 1;
     $('nextBtn').disabled = !(longEnough && hasEvents);
 
     if (!longEnough) {
-      $('hint').textContent = ' — escribe al menos ' + MIN_CHARS + ' caracteres';
+      $('hint').textContent = t.hintMin(MIN_CHARS);
     } else if (!hasEvents) {
-      $('hint').textContent =
-        ' — no detectamos pulsaciones de tecla. Si usas predicción de texto, autocompletar ' +
-        'o dictado por voz, prueba escribiendo algunas letras manualmente.';
+      $('hint').textContent = t.hintNoEvents;
     } else {
       $('hint').textContent = '';
     }
@@ -394,13 +750,14 @@
 
   // ── Flujo ──
   function showPrompt() {
+    var t = STRINGS[currentLang];
     events = [];
     active.clear();
     input.value = '';
     $('nextBtn').disabled = true;
     $('promptText').textContent = PROMPTS[promptIndex];
-    $('progress').textContent = 'Texto ' + (promptIndex + 1) + ' de ' + PROMPTS.length;
-    $('hint').textContent = ' — escribe al menos ' + MIN_CHARS + ' caracteres';
+    $('progress').textContent = t.progress(promptIndex + 1, PROMPTS.length);
+    $('hint').textContent = t.hintMin(MIN_CHARS);
 
     // t_render de la Ec. 3.3: instante en que el texto queda pintado en pantalla.
     requestAnimationFrame(function () {
@@ -412,6 +769,7 @@
   }
 
   $('nextBtn').addEventListener('click', function () {
+    var t = STRINGS[currentLang];
     $('nextBtn').disabled = true;
     events.sort(function (a, b) { return a.pressTime - b.pressTime; });
 
@@ -437,17 +795,18 @@
 
     if (!ENDPOINT) { advance(); return; }
 
-    setStatus('Enviando…');
+    setStatus(t.sendingStatus);
     postRow(row)
-      .then(function () { sent++; setStatus('Enviado ✓', 'ok'); })
+      .then(function () { sent++; setStatus(t.sentStatus, 'ok'); })
       .catch(function () {
         enqueue(row);
-        setStatus('Sin conexión: se enviará automáticamente más tarde.', 'warn');
+        setStatus(t.offlineStatus, 'warn');
       })
       .then(advance);
   });
 
   function finish() {
+    var t = STRINGS[currentLang];
     $('task').classList.add('hidden');
     $('done').classList.remove('hidden');
 
@@ -455,27 +814,23 @@
     var pending = readQueue().length;
 
     if (!ENDPOINT) {
-      $('summary').textContent =
-        'Se registraron ' + collected.length + ' textos y ' + totalEvents +
-        ' pulsaciones. Ni una sola letra fue guardada.';
+      $('summary').textContent = t.summaryOffline(collected.length, totalEvents);
       $('pendingBox').classList.remove('hidden');
       return;
     }
 
-    $('summary').textContent =
-      'Se enviaron ' + sent + ' de ' + collected.length + ' textos (' + totalEvents +
-      ' pulsaciones en total). Ni una sola letra fue guardada.';
+    $('summary').textContent = t.summaryOnline(sent, collected.length, totalEvents);
 
     if (pending > 0) $('pendingBox').classList.remove('hidden');
   }
 
   $('retryBtn').addEventListener('click', function () {
+    var t = STRINGS[currentLang];
     $('retryBtn').disabled = true;
     flushQueue().then(function (ok) {
       sent += ok;
       var pending = readQueue().length;
-      $('summary').textContent =
-        'Se enviaron ' + sent + ' de ' + collected.length + ' textos.';
+      $('summary').textContent = t.summaryAfterRetry(sent, collected.length);
       if (pending === 0) $('pendingBox').classList.add('hidden');
       $('retryBtn').disabled = false;
     });
@@ -488,11 +843,12 @@
   });
 
   $('downloadBtn').addEventListener('click', function () {
+    var t = STRINGS[currentLang];
     var corpus = {
       schemaVersion: 1,
       provenance: 'human',
       source: 'collection-page',
-      notes: 'Recogido con consentimiento informado. Sin identidades de tecla.',
+      notes: t.corpusNotes,
       createdAt: new Date().toISOString(),
       sessions: collected.map(function (r) {
         return {
@@ -510,13 +866,16 @@
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'pohi-tecleo-' + Date.now() + '.json';
+    a.download = t.downloadPrefix + Date.now() + '.json';
     a.click();
     URL.revokeObjectURL(url);
   });
 
   // Reintenta lo pendiente en cuanto vuelva la conexión.
   window.addEventListener('online', flushQueue);
+
+  // ── Render inicial ──
+  applyLanguage(currentLang);
 })();
 </script>
 
