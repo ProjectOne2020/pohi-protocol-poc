@@ -846,6 +846,55 @@ Las futuras evaluaciones empíricas deben informar el rendimiento utilizando las
 
 ---
 
+## 10.2 Evaluación Adversarial Preliminar (Completada, 2026-07-31)
+
+Las secciones anteriores especifican la metodología para un estudio de cohorte a gran escala ($N \ge 10{,}000$) orientado a producir estimaciones EER/FAR/FRR precisas de nivel productivo. Ese estudio aún no se ha realizado. Esta sección reporta un experimento previo, deliberadamente más pequeño: una evaluación adversarial diseñada para responder una pregunta más urgente antes de invertir en la cohorte grande — **¿puede un patrón de tecleo falso, generado offline y barato, derrotar la puntuación?**
+
+### 10.2.1 Condición de Falsación Pre-Registrada
+
+Consistente con el estándar epistemológico de la Sección 1.5 ([Validación Empírica Requerida] y la prohibición de presentar afirmaciones sin medir como establecidas), la siguiente condición fue registrada en el repositorio del proyecto (`experiments/README.md` §1) **antes** de recolectar cualquier dato de participantes:
+
+> Si el adversario más fuerte alcanza $\text{FAR}(\theta) \ge 0.50$ en el umbral operacional del dominio, PoHI en software puro no entrega la propiedad de seguridad que reclama, y la extensión de atestación por hardware (Sección 12.3) debe reclasificarse de trabajo futuro opcional a requisito estructural.
+
+### 10.2.2 Método
+
+- **Población de referencia**: $N=137$ sesiones de tecleo de 25 participantes que dieron su consentimiento, recolectadas mediante un instrumento web construido para este fin que captura únicamente marcas de tiempo de presión/liberación de tecla y una bandera de `Retroceso` (sin identidad de carácter), en cuatro estratos de dispositivo (escritorio, portátil, iOS, Android).
+- **Calibración evaluada**: Escrow Financiero P2P ($\alpha=0.30$, $\beta=0.50$, $\gamma=0.20$, $\theta=0.85$), el perfil de dominio de mayor seguridad de la Tabla 9.1.
+- **Adversarios**: seis modelos con conocimiento completo del protocolo, la función de puntuación, los pesos de calibración y el umbral (principio de Kerckhoffs). Tres son controles positivos correspondientes a vectores de amenaza ya reclamados como mitigados (macro de retardo constante, ruido uniforme, ruido gaussiano); tres prueban la limitación de autenticidad del testigo identificada en el modelo de amenaza (un imitador estadístico offline ajustado a estadísticas de un corpus público, una repetición de telemetría cruda, y un imitador optimizado que además ajusta los componentes de latencia cognitiva y recalibración de error, ambos trivialmente controlables por un adversario — ver Modelo de Amenaza, Sección 5).
+- **Métricas**: FAR, AUC y EER por adversario, cada una con un intervalo de confianza bootstrap no paramétrico del 95% ($B=1000$), según las ecuaciones de la Sección 10.1.
+- El aparato completo, las implementaciones de los adversarios y el código de evaluación son públicos: `experiments/` en el repositorio del proyecto.
+
+### 10.2.3 Resultados
+
+| Adversario | Vector de Amenaza | FAR (IC 95%) | AUC (IC 95%) | EER |
+| :--- | :--- | :--- | :--- | :--- |
+| Macro de retardo constante | 6 | 0.0% [0.0–0.0%] | 1.000 [1.000–1.000] | 0.0% |
+| Ruido aleatorio uniforme | 7 | 0.0% [0.0–0.0%] | 1.000 [1.000–1.000] | 0.0% |
+| Ruido aleatorio gaussiano | 7 | 0.0% [0.0–0.0%] | 1.000 [1.000–1.000] | 0.0% |
+| Imitador estadístico offline | 12 | 48.9% [40.9–57.7%] | 0.532 [0.454–0.604] | 48.9% |
+| Repetición de telemetría humana | 8 | 46.0% [37.2–54.7%] | 0.509 [0.436–0.576] | 47.8% |
+| **Imitador optimizado ($\tau_{real}$, $\sigma^2_{err}$ ajustados)** | 12 | **86.9% [81.0–92.0%]** | **0.388 [0.318–0.458]** | 57.7% |
+
+Como referencia, solo 68 de 137 sesiones humanas reales (49.6%) fueron aceptadas en el umbral de Escrow sin ningún adversario presente.
+
+### 10.2.4 Interpretación
+
+Los tres adversarios de control positivo fueron rechazados exactamente como reclama el modelo de amenaza (FAR $=0\%$, AUC $=1.0$), confirmando que el aparato mide lo que se supone que debe medir.
+
+El imitador estadístico offline y la repetición de telemetría cruda son **estadísticamente indistinguibles del azar**: ambos intervalos de confianza de AUC contienen $0.5$. Contra estos dos adversarios, la puntuación compuesta no muestra poder discriminativo demostrado más allá de una moneda al aire.
+
+El imitador optimizado es el resultado decisivo. Su AUC de $0.388$ — con un intervalo de confianza enteramente por debajo de $0.5$ — significa que este adversario no solo evade el umbral; **puntúa más alto que las sesiones humanas genuinas en promedio**. Este es el mecanismo anticipado en la Sección 5.2 del Modelo de Amenaza: el componente de latencia cognitiva $R_{cog}$ es libre de manipular (el adversario simplemente elige cuánto esperar), y el componente de recalibración de error $\sigma^2_{err}$ también se elige libremente, mientras que una distribución idealizada ajustada offline para $S_F$ produce una asimetría más limpia que una muestra humana real y ruidosa.
+
+**Se activa la condición de falsación pre-registrada de la Sección 10.2.1**: $\text{FAR}=86.9\% \gg 50\%$. Bajo la calibración y el circuito actuales, PoHI en software puro no sostiene la propiedad de seguridad reclamada en el Capítulo 7 frente a un adversario moderadamente sofisticado. La atestación por hardware (Sección 12.3) se reclasifica, en consecuencia, de trabajo futuro a fase de investigación requerida; ver la propuesta de diseño en el repositorio del proyecto (`docs/psp/PSP-0005-hardware-attestation.md`).
+
+Un hallazgo secundario, independiente de la prueba adversarial: la tasa de aceptación humana del $49.6\%$ en el umbral de Escrow indica que los pesos de calibración y/o los parámetros de referencia sigmoidales (Sección 3.5, `packages/core-math/src/index.ts`) se ajustaron sin fundamento empírico y probablemente requieran recalibración contra datos poblacionales reales antes de cualquier despliegue de producción, independientemente del hallazgo adversarial anterior.
+
+### 10.2.5 Alcance y Limitaciones
+
+$N=25$ participantes es suficiente para detectar un efecto de este tamaño (una tasa de éxito del 87% es inequívoca con este tamaño de muestra), pero no sustituye el estudio de cohorte $N \ge 10{,}000$ de las secciones anteriores, que sigue siendo necesario para producir estimaciones FAR/FRR/EER de nivel productivo y caracterizar el desempeño en todo el rango de dispositivos y demografía. Este resultado debe leerse como una respuesta a "¿vale la pena reforzar el diseño actual antes de un estudio a gran escala?", no como una certificación de seguridad final.
+
+---
+
 # Capítulo 11: Limitaciones del Protocolo
 
 1. **Estimación Conductual vs. Prueba Ontológica de Humanidad**: Mide la compatibilidad estadística motora, no el alma o el ser ontológico.

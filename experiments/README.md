@@ -2,7 +2,14 @@
 
 This directory contains the apparatus for the empirical validation required by whitepaper Chapter 10, and the adversarial evaluation required by [docs/THREAT_MODEL.md](../docs/THREAT_MODEL.md) §5.4.
 
-Everything here is a measurement instrument. It contains **no results**: results appear only when a corpus collected from consenting participants is supplied.
+Everything here is a measurement instrument. It contains no participant-level data — results appear only when a corpus collected from consenting participants is supplied.
+
+> [!IMPORTANT]
+> **This apparatus has been run.** See [RESULTS.md](RESULTS.md) for the full 2026-07-31 report:
+> the pre-registered falsification condition below was triggered (strongest adversary FAR =
+> 86.9%), which is why hardware attestation is now proposed in
+> [`docs/psp/PSP-0005-hardware-attestation.md`](../docs/psp/PSP-0005-hardware-attestation.md)
+> rather than listed as optional future work.
 
 ---
 

@@ -13,6 +13,11 @@ packages/*/src/*.d.ts.map
 # Circuit build artifacts (regenerable via `npm run circuits:build`)
 circuits/build/
 
+# Raw participant-level exports. The consent screen promises data "may be published
+# in aggregate form" (forma agregada) — individual session records must never be
+# committed to this public repository. Only aggregate statistics/results belong here.
+experiments/data/
+
 # Ceremony artifacts. Ignored by default so that a local development ceremony is never
 # mistaken for a real one. When an actual multi-party ceremony is held, its transcript and
 # verification key MUST be published: commit them explicitly with

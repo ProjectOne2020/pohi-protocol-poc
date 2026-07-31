@@ -6,6 +6,67 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [Unreleased] - 2026-07-31
+
+### Added — Empirical Adversarial Evaluation Results
+
+Ran the evaluation apparatus added on 2026-07-29 against a real corpus: 137 sessions from
+25 consenting participants, collected through `experiments/collect/index.html`.
+
+- **The pre-registered falsification condition was triggered.** The strongest adversary
+  (an offline mimic exploiting the two freely-controllable score components, $R_{cog}$ and
+  $\sigma^2_{err}$) achieved FAR = 86.9% [95% CI 81.0–92.0%] against the P2P Escrow
+  calibration ($\theta=0.85$). Its AUC of 0.388 means it scored *higher* than genuine human
+  sessions on average, not merely high enough to pass.
+- The three positive-control adversaries (constant-delay, uniform jitter, Gaussian jitter)
+  were rejected exactly as `docs/THREAT_MODEL.md` claims (FAR = 0%, AUC = 1.0), confirming
+  the apparatus measures what it is designed to measure.
+- Two intermediate adversaries (offline statistical mimic, raw telemetry replay) were
+  statistically indistinguishable from chance (AUC confidence intervals span 0.5).
+- Secondary finding: only 49.6% of genuine human sessions were accepted at this
+  calibration's threshold, independent of any adversary — suggesting the domain weights
+  and sigmoid reference parameters need recalibration against real data.
+- Full results, method, and interpretation: `experiments/RESULTS.md`. Reported in the
+  whitepaper as new Section 10.4 (EN) / 10.2 (ES).
+
+### Added — Hardware Attestation Design Proposal (PSP-0005)
+
+Per the reclassification rule stated in `experiments/README.md` §1, the falsification
+result above moves hardware-anchored timestamp attestation from optional future work
+(whitepaper Ch.12) to a required next research phase. `docs/psp/PSP-0005-hardware-attestation.md`
+proposes a three-tier design:
+
+- **Tier 1 (proposed for implementation)**: a WebAuthn platform-authenticator signature
+  over an in-circuit Poseidon commitment of the private witness, verified at the
+  settlement layer alongside the ZK proof. Raises the cost of witness fabrication from
+  "run a script" to "control a specific enrolled hardware-backed key," at the cost of
+  introducing a persistent per-device identifier — a real reduction in the unlinkability
+  `docs/PRIVACY.md` currently describes as absolute, which the proposal recommends
+  scoping to an opt-in, per-domain assurance tier rather than a blanket requirement.
+- **Tier 2 (documented, not proposed for immediate work)**: native-mobile app/device
+  integrity attestation (App Attest / Play Integrity).
+- **Tier 3 (aspirational)**: OS-level hardware-signed input timestamps, which no
+  commodity OS exposes today and which this project cannot unilaterally build.
+
+The proposal states plainly, without softening, that even Tier 1 does not close the gap:
+a secure enclave signs whatever commitment the JavaScript layer computed and handed it,
+and never independently observes a keystroke. It raises attacker cost; it does not
+achieve unforgeability. **Status: design only — no corresponding code exists yet.**
+
+### Changed — Documentation Updated with Empirical Results
+
+- `docs/THREAT_MODEL.md` §5.4/§5.5: the "empirical characterisation... is a prerequisite"
+  language is replaced with the actual measured results and a link to the full report.
+- `docs/IMPLEMENTATION_STATUS.md`: "Hardware Enclave Signing" moves from "Reserved for
+  future research" to "Required, not reserved"; the $N \ge 10{,}000$ cohort study is
+  marked deferred until the design above is at least prototyped, since running it against
+  the current unhardened circuit would not answer a question worth the investment.
+- Whitepaper (EN and ES): new section reporting the empirical result, explicit about its
+  scope ($N=25$ is sufficient to detect an effect this large, but is not a substitute for
+  the full cohort study).
+
+---
+
 ## [Unreleased] - 2026-07-29
 
 ### Fixed — Zero-Knowledge Circuit Soundness

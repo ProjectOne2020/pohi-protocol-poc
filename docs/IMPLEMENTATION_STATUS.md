@@ -42,9 +42,10 @@ flowchart TD
 | **EVM Escrow Smart Contract** | `@pohi-protocol/contracts` | Solidity 0.8.20 (Precompile 0x08) | **Specified only** — no source file exists in the repository |
 | **Stateless ZK-Oracle API** | OpenAPI 3.0 REST Schema | Node.js / Rust Backend | **Specified only** — no source file exists in the repository |
 | **Production Trusted Setup** | Multi-party ceremony | Groth16 phase 2 | **Not started** — the committed build uses development entropy |
-| **Empirical Cohort Study** | Benchmark Dataset | $N \ge 10,000$ Real Typists | **Planned / Empirical Validation Required** |
+| **Adversarial Pilot Evaluation** | `experiments/` | $N=25$ participants, 6 adversary models | **Completed 2026-07-31** — falsification condition triggered; see [RESULTS.md](../experiments/RESULTS.md) |
+| **Empirical Cohort Study** | Benchmark Dataset | $N \ge 10,000$ Real Typists | **Planned / Empirical Validation Required** — pilot above found the current design does not warrant this investment without hardening first |
 | **Multimodal Sensor Fusion** | Mobile Telemetry Engine | Accelerometer / Gyroscope | **Reserved for future research** |
-| **Hardware Enclave Signing** | TEE Module | ARM TrustZone / Secure Enclave | **Reserved for future research** |
+| **Hardware Enclave Signing** | TEE Module | ARM TrustZone / Secure Enclave | **Required, not reserved** — pilot evaluation (2026-07-31) found software-only scoring defeated 86.9% of the time by an optimized adversary; design proposed in [PSP-0005](psp/PSP-0005-hardware-attestation.md) |
 
 ---
 
@@ -74,9 +75,19 @@ flowchart TD
 - **Status**: **Active Development**.
 - **Deliverables**: OpenAPI 3.0 specification for `POST /v1/verify` endpoint, supporting sub-5ms proof verification and ECDSA attestation token signing.
 
-### 2.7 Empirical Benchmark Dataset ($N \ge 10,000$)
-- **Status**: **Planned / Empirical Validation Required**.
+### 2.7 Adversarial Pilot Evaluation ($N=25$)
+- **Status**: **Completed 2026-07-31**.
+- **Deliverables**: 137 consenting-participant sessions scored against six adversary models (three positive controls, three testing the witness-authenticity gap of `docs/THREAT_MODEL.md` §5), with a falsification condition pre-registered before data collection.
+- **Result**: the strongest adversary (an offline mimic tuning the two freely-controllable score components) achieved FAR = 86.9% [95% CI 81.0–92.0%] against the Escrow calibration — its AUC of 0.388 means it scored *higher* than genuine humans on average. The pre-registered falsification threshold (FAR ≥ 50%) was triggered. Full results: [`experiments/RESULTS.md`](../experiments/RESULTS.md).
+- **Consequence**: hardware-anchored timestamp attestation (§2.8) is reclassified from optional future work to a required next phase. The full $N \ge 10,000$ cohort study below is deferred until that hardening exists, since running it against the current unhardened design would not answer a question worth the investment.
+
+### 2.8 Empirical Benchmark Dataset ($N \ge 10,000$)
+- **Status**: **Planned / deferred pending hardware attestation** (see §2.7).
 - **Scope**: Multi-device sampling across mechanical keyboards ($25\%$), laptop keyboards ($25\%$), iOS screens ($25\%$), and Android screens ($25\%$) to validate EER, FAR, and FRR metrics with 1,000 bootstrap iterations.
+
+### 2.9 Hardware Attestation Extension
+- **Status**: **Design proposed, not implemented** — [`docs/psp/PSP-0005-hardware-attestation.md`](psp/PSP-0005-hardware-attestation.md).
+- **Scope**: anchor the witness to a signal an adversary cannot fabricate in software, via a platform authenticator (WebAuthn) attestation of the witness commitment as an immediately buildable first tier, with native-mobile secure-element integration as a stronger second tier. The proposal is explicit that even the strongest tier only raises attacker cost — it does not achieve absolute unforgeability, since no current commodity OS exposes hardware-timestamped raw input events to web or app code.
 
 ---
 
@@ -85,3 +96,5 @@ flowchart TD
 - For development roadmap milestones, see [ROADMAP.md](../ROADMAP.md).
 - For multi-tier architecture breakdown, see [ARCHITECTURE.md](ARCHITECTURE.md).
 - For protocol execution sequence, see [PROTOCOL.md](PROTOCOL.md).
+- For the adversarial pilot evaluation results, see [RESULTS.md](../experiments/RESULTS.md).
+- For the hardware attestation design proposal, see [PSP-0005](psp/PSP-0005-hardware-attestation.md).

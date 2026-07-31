@@ -1138,6 +1138,55 @@ $$F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \
 
 ---
 
+## 10.4 Preliminary Adversarial Evaluation (Completed, 2026-07-31)
+
+Sections 10.1–10.3 specify the methodology for a large-scale cohort study ($N \ge 10{,}000$) intended to produce precise, production-grade EER/FAR/FRR estimates. That study has not yet been conducted. This section reports a smaller, deliberately prior experiment: an adversarial evaluation designed to answer a narrower and more urgent question before investing in the large cohort — **can a cheap, offline-generated fake typing pattern defeat the score at all?**
+
+### 10.4.1 Pre-Registered Falsification Condition
+
+Consistent with the epistemological standard of Section 1.5 ([Empirical Validation Required] and the prohibition on presenting unmeasured claims as established), the following condition was recorded in the project repository (`experiments/README.md` §1) **before** any participant data was collected:
+
+> If the strongest adversary achieves $\text{FAR}(\theta) \ge 0.50$ at the domain operating threshold, software-only PoHI does not deliver its claimed security property, and the hardware-attestation extension (Section 12.3) must be reclassified from optional future work to a load-bearing requirement.
+
+### 10.4.2 Method
+
+- **Reference population**: $N=137$ typing sessions from 25 consenting participants, collected via a purpose-built web instrument capturing only keystroke press/release timestamps and a `Backspace` flag (no character identity), across four device strata (desktop, laptop, iOS, Android).
+- **Calibration evaluated**: P2P Financial Escrow ($\alpha=0.30$, $\beta=0.50$, $\gamma=0.20$, $\theta=0.85$), the highest-security domain profile of Table 9.1.
+- **Adversaries**: six models granted full knowledge of the protocol, scoring function, calibration weights, and threshold (Kerckhoffs's principle). Three are positive controls corresponding to threat vectors already claimed as mitigated (constant-delay macro, uniform jitter, Gaussian jitter); three test the witness-authenticity limitation identified in the threat model (an offline statistical mimic fit to public corpus statistics, a raw-telemetry replay, and an optimized mimic that additionally tunes the cognitive-latency and error-recalibration components, which are trivially controllable by an adversary — see Threat Model Section 5).
+- **Metrics**: FAR, AUC, and EER per adversary, each with a non-parametric bootstrap 95% confidence interval ($B=1000$), per the equations of Section 10.3.
+- Full apparatus, adversary implementations, and raw evaluation code are public: `experiments/` in the project repository.
+
+### 10.4.3 Results
+
+| Adversary | Threat Vector | FAR (95% CI) | AUC (95% CI) | EER |
+| :--- | :--- | :--- | :--- | :--- |
+| Constant-delay macro | 6 | 0.0% [0.0–0.0%] | 1.000 [1.000–1.000] | 0.0% |
+| Uniform random jitter | 7 | 0.0% [0.0–0.0%] | 1.000 [1.000–1.000] | 0.0% |
+| Gaussian random jitter | 7 | 0.0% [0.0–0.0%] | 1.000 [1.000–1.000] | 0.0% |
+| Offline statistical mimic | 12 | 48.9% [40.9–57.7%] | 0.532 [0.454–0.604] | 48.9% |
+| Human telemetry replay | 8 | 46.0% [37.2–54.7%] | 0.509 [0.436–0.576] | 47.8% |
+| **Optimized mimic (tuned $\tau_{real}$, $\sigma^2_{err}$)** | 12 | **86.9% [81.0–92.0%]** | **0.388 [0.318–0.458]** | 57.7% |
+
+For reference, only 68 of 137 real human sessions (49.6%) were accepted at the Escrow threshold with no adversary present at all.
+
+### 10.4.4 Interpretation
+
+The three positive-control adversaries were rejected exactly as the threat model claims (FAR $=0\%$, AUC $=1.0$), confirming the apparatus measures what it is intended to measure.
+
+The offline statistical mimic and the raw-telemetry replay are **statistically indistinguishable from chance**: both AUC confidence intervals contain $0.5$. Against these two adversaries, the composite score carries no demonstrated discriminative power beyond a coin flip.
+
+The optimized mimic is the decisive result. Its AUC of $0.388$ — with a confidence interval entirely below $0.5$ — means this adversary does not merely evade the threshold; it scores **higher than genuine human sessions on average**. This is the mechanism anticipated in Threat Model Section 5.2: the cognitive-latency component $R_{cog}$ is free to manipulate (the adversary simply chooses how long to wait), and the error-recalibration component $\sigma^2_{err}$ is likewise freely chosen, while an idealized offline-fit distribution for $S_F$ produces cleaner right-skew than a real, noisy human sample.
+
+**The pre-registered falsification condition of Section 10.4.1 is triggered**: $\text{FAR}=86.9\% \gg 50\%$. Under the present calibration and circuit, software-only PoHI does not sustain the security property claimed in Chapter 7 against a moderately sophisticated adversary. Hardware attestation (Section 12.3) is accordingly reclassified from future work to a required next research phase; see the design proposal in the project repository (`docs/psp/PSP-0005-hardware-attestation.md`).
+
+A secondary finding, independent of adversarial testing: the $49.6\%$ human acceptance rate at the Escrow threshold indicates the calibration weights and/or sigmoidal reference parameters (Section 3.5, `packages/core-math/src/index.ts`) were tuned without empirical grounding and likely require recalibration against real population data before any production deployment, regardless of the adversarial finding above.
+
+### 10.4.5 Scope and Limitations
+
+$N=25$ participants is sufficient to detect an effect of this size (an 87% success rate is unambiguous at this sample size) but is not a substitute for the $N \ge 10{,}000$ cohort study of Sections 10.1–10.2, which remains necessary to produce production-grade FAR/FRR/EER estimates and to characterize performance across the full device and demographic range. This result should be read as answering "is the current design worth hardening before a large-scale study," not as a final security certification.
+
+---
+
 # Chapter 11: Protocol Limitations
 
 To maintain absolute scientific objectivity, this chapter outlines the formal boundaries and operational limits of the PoHI protocol.

@@ -141,9 +141,22 @@ The gap is closed only by anchoring the witness to something the adversary canno
 1. **Hardware-attested timestamps** — signing raw sensor events inside ARM TrustZone or a Secure Enclave before witness compilation, and verifying the attestation signature in-circuit. Listed as future work in Chapter 12; it is in fact the load-bearing mitigation for this gap rather than an optional enhancement.
 2. **Verifier-supplied timing challenges** — binding an unpredictable nonce, issued by the verifier at render time, into $t_{render}$, so $\tau_{real}$ measures an interval the prover could not have precomputed. This constrains one component without breaking the air-gap.
 3. **Cross-session distributional consistency** — an adversary sampling independently per session produces a population distribution distinguishable from a single human's, at the cost of introducing linkable state and thus weakening the privacy properties.
-4. **Empirical characterisation of the attack** — the honest scientific step: implement the offline-generation adversary and measure the achieved false acceptance rate. Until this is done, the practical strength of the protocol against a competent adversary is unmeasured.
+4. **Empirical characterisation of the attack** — the honest scientific step: implement the offline-generation adversary and measure the achieved false acceptance rate. **Completed 2026-07-31; see Section 5.5.**
 
-Direction 4 is a prerequisite for any quantitative security claim in Chapter 9.
+### 5.5 Empirical Measurement of the Gap (Completed, 2026-07-31)
+
+Direction 4 above has been carried out. Full methodology, adversary implementations, and the pre-registered falsification condition are in `experiments/README.md`; the complete numerical results are in [RESULTS.md](../experiments/RESULTS.md) and whitepaper Section 10.4. Summary:
+
+| Adversary | FAR at $\theta=0.85$ | AUC |
+| :--- | :--- | :--- |
+| Constant-delay / uniform / Gaussian jitter (positive controls) | 0.0% | 1.000 |
+| Offline statistical mimic | 48.9% | 0.532 (CI spans 0.5 — indistinguishable from chance) |
+| Raw telemetry replay | 46.0% | 0.509 (CI spans 0.5 — indistinguishable from chance) |
+| **Optimized mimic (tunes $R_{cog}$, $\sigma^2_{err}$)** | **86.9%** | **0.388 (CI entirely below 0.5 — outscores real humans)** |
+
+$N=137$ sessions from 25 participants. The pre-registered falsification threshold (FAR $\ge 50\%$ for the strongest adversary) was exceeded by a wide margin (86.9% vs. a CI lower bound of 81.0%). **Direction 1 (hardware-attested timestamps) is accordingly no longer a research suggestion — it is a required next step**, per the reclassification rule stated in `experiments/README.md` §1. A design proposal is drafted at [`docs/psp/PSP-0005-hardware-attestation.md`](psp/PSP-0005-hardware-attestation.md).
+
+This measurement used $N=25$, sufficient to detect an effect of this size unambiguously, but far short of the $N \ge 10{,}000$ cohort of whitepaper Chapter 10 needed for production-grade FAR/FRR estimates. Treat this as settling *whether* hardening is needed, not as a final security certification.
 
 ---
 
@@ -153,3 +166,5 @@ Direction 4 is a prerequisite for any quantitative security claim in Chapter 9.
 - For protocol workflow details, see [PROTOCOL.md](PROTOCOL.md).
 - For cryptographic circuit constraints, see [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md).
 - For the trusted setup that underwrites Theorem 7.2, see [CEREMONY.md](CEREMONY.md).
+- For the full empirical evaluation results, see [RESULTS.md](../experiments/RESULTS.md).
+- For the hardware attestation design proposal, see [PSP-0005](psp/PSP-0005-hardware-attestation.md).
